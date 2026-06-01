@@ -1,0 +1,149 @@
+/* ============================================================
+   D10 · Design Tokens
+   Direção: "Mineral e quente"  ·  Brasileiro sem caricatura.
+   Os valores aqui são TRAVADOS — não alterar sem revisitar o brand system.
+   ============================================================ */
+
+/* Fontes ---------------------------------------------------- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap");
+
+:root {
+  /* ─── Marca + superfícies (tema claro) ─── */
+  --brand:           #C46850;   /* coral terroso — brand, primário, sidebar accent */
+  --brand-strong:    #8A3D2A;   /* terracota — hover do coral */
+  --brand-soft:      #E8B4A3;   /* usado apenas no escuro; mantido aqui pra evitar fallback nulo */
+  --bg:              #FBF6EE;   /* fundo do conteúdo */
+  --surface:         #FFFFFF;   /* cards e leitura */
+  --sidebar:         #ECE0CC;   /* sidebar + chips secundários */
+  --text:            #2D231D;   /* carvão quente */
+
+  /* Hierarquia de texto (derivada do --text) */
+  --text-muted:      rgba(45, 35, 29, 0.62);
+  --text-faint:      rgba(45, 35, 29, 0.40);
+
+  /* Linhas neutras (derivadas) */
+  --divider:         rgba(45, 35, 29, 0.08);
+  --divider-strong:  rgba(45, 35, 29, 0.16);
+
+  /* ─── Paleta semântica por domínio ─── */
+  /* care · tratamento, saúde, sucesso */
+  --care-base:       #7E9170;
+  --care-fill:       #D8E0D0;
+  /* attention · tempo, atenção, financeiro */
+  --attention-base:  #C99853;
+  --attention-fill:  #F5DCAE;
+  /* regulatory · regulação, prescrição, info */
+  --regulatory-base: #707682;
+  --regulatory-fill: #D5D8DE;
+
+  /* ─── Raios ─── */
+  --radius-card:     16px;
+  --radius-pill:     999px;
+  --radius-input:    10px;       /* menor, derivado pra inputs e elementos retangulares menores */
+
+  /* ─── Tipografia ─── */
+  --font-serif:      "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  --font-sans:       "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Escala (modular ~1.18) */
+  --fs-xs:           11px;
+  --fs-sm:           12.5px;
+  --fs-base:         14px;
+  --fs-md:           15.5px;
+  --fs-lg:           18px;
+  --fs-xl:           22px;
+  --fs-2xl:          28px;
+  --fs-3xl:          36px;
+
+  /* Pesos */
+  --fw-regular:      400;
+  --fw-medium:       500;
+  --fw-semibold:     600;
+  --fw-bold:         700;
+
+  /* ─── Espaçamentos (escala 4) ─── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  /* ─── Sombras (sutis, sempre quentes) ─── */
+  --shadow-sm:       0 1px 2px rgba(45, 35, 29, 0.04);
+  --shadow-md:       0 6px 18px -8px rgba(45, 35, 29, 0.12), 0 2px 4px rgba(45, 35, 29, 0.04);
+  --shadow-lg:       0 24px 48px -24px rgba(45, 35, 29, 0.18);
+
+  /* ─── Motion ─── */
+  --ease-out:        cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast:   140ms;
+  --duration-base:   220ms;
+
+  /* ─── Layout ─── */
+  --sidebar-width:   248px;
+}
+
+/* ────────────────────────────────────────────────────────────
+   Tema escuro
+   ──────────────────────────────────────────────────────────── */
+[data-theme="dark"] {
+  --brand:           #C46850;
+  --brand-strong:    #D88068;   /* hover mais claro no escuro */
+  --brand-soft:      #E8B4A3;
+  --bg:              #14110F;
+  --surface:         #1F1A17;
+  --sidebar:         #221C18;
+  --text:            #F1E6D6;
+
+  --text-muted:      rgba(241, 230, 214, 0.62);
+  --text-faint:      rgba(241, 230, 214, 0.38);
+
+  --divider:         rgba(241, 230, 214, 0.07);
+  --divider-strong:  rgba(241, 230, 214, 0.14);
+
+  --care-base:       #A8BD96;
+  --care-fill:       rgba(126, 145, 112, 0.13);
+  --attention-base:  #E0B070;
+  --attention-fill:  rgba(201, 152, 83, 0.13);
+  --regulatory-base: #A8AEBA;
+  --regulatory-fill: rgba(112, 118, 130, 0.16);
+
+  --shadow-sm:       0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-md:       0 6px 18px -8px rgba(0, 0, 0, 0.55), 0 2px 4px rgba(0, 0, 0, 0.30);
+  --shadow-lg:       0 24px 48px -24px rgba(0, 0, 0, 0.70);
+}
+
+/* ────────────────────────────────────────────────────────────
+   Reset enxuto + base
+   ──────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  font-feature-settings: "ss01", "cv11";   /* Inter cleaner alternates */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background var(--duration-base) var(--ease-out), color var(--duration-base) var(--ease-out);
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+
+a { color: var(--brand-strong); text-decoration: none; }
+[data-theme="dark"] a { color: var(--brand-soft); }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+::selection { background: var(--brand); color: #FFF7EE; }
+
+/* Scrollbar quente (WebKit) */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: var(--divider-strong); border-radius: var(--radius-pill); }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+::-webkit-scrollbar-track { background: transparent; }

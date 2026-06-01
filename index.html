@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>lumi · design</title>
+  <link rel="stylesheet" href="styles/tokens.css" />
+  <link rel="stylesheet" href="styles/components.css" />
+  <style>
+    body { padding: var(--space-7); display: flex; flex-direction: column; gap: var(--space-6); max-width: 720px; margin: 0 auto; }
+    h1 { font-family: var(--font-serif); font-weight: 500; font-size: 64px; line-height: 1; letter-spacing: -0.03em; color: var(--brand); margin: 0; font-optical-sizing: auto; }
+    .links { display: flex; flex-direction: column; gap: var(--space-3); }
+    .link-card { background: var(--surface); border: 0.5px solid var(--divider); border-radius: var(--radius-card); padding: var(--space-5); text-decoration: none; color: var(--text); transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
+    .link-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); text-decoration: none; }
+    .link-card__title { font-weight: var(--fw-semibold); font-size: var(--fs-md); }
+    .link-card__desc { color: var(--text-muted); font-size: var(--fs-sm); margin-top: 4px; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="label" style="color: var(--text-faint);">lumi · design</span>
+    <h1>lumi</h1>
+    <p style="color: var(--text-muted); margin: var(--space-3) 0 0; font-size: var(--fs-md);">Brand system &amp; mockups · plataforma de cannabis medicinal.</p>
+  </header>
+
+  <section class="links">
+    <a class="link-card" href="pages/login.html">
+      <div>
+        <div class="link-card__title">Login</div>
+        <div class="link-card__desc">Tela de entrada — moldura coral, painel em vidro fosco, wordmark central, form com border coral.</div>
+      </div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+    <a class="link-card" href="TOKENS.md">
+      <div>
+        <div class="link-card__title">Design tokens</div>
+        <div class="link-card__desc">Documentação dos tokens · cores, paleta semântica, tipografia, raios, regra de ouro do coral.</div>
+      </div>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </section>
+</body>
+</html>
