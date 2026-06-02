@@ -33,6 +33,7 @@ lumi-design/
 | # | Tela | Status |
 |---|------|--------|
 | 01 | `pages/login.html` | **Fechado** — moldura coral, painel em vidro fosco, wordmark central, form com border coral |
+| 02 | `pages/dashboard.html` | **Fechado** — início do admin · sidebar + topbar + saudação + stats semânticos + alerta Anvisa + pipeline do módulo Pro + lista de atenção + atividade recente |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 

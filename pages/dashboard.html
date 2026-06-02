@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Início · lumi</title>
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <style>
+    html { margin: 0; padding: 0; background: var(--brand); }
+    body {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: 0;
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      background: var(--brand);
+      overflow: hidden;
+    }
+
+    /* Painel da dashboard — mesma vibe do login (vidro fosco, moldura coral) */
+    .dash-shell {
+      flex: 1;
+      height: 100%;
+      align-self: stretch;
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px -28px rgba(45, 35, 29, 0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.32), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.22), transparent 65%),
+        rgba(236, 224, 204, 0.86);
+    }
+    [data-theme="dark"] .dash-shell {
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.24), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.18), transparent 65%),
+        rgba(34, 28, 24, 0.96);
+    }
+
+    /* ────────── SIDEBAR ────────── */
+    .dash-sidebar {
+      padding: var(--space-5) var(--space-4) var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      border-right: 0.5px solid var(--divider);
+      overflow-y: auto;
+      background: transparent;
+    }
+    .dash-brand {
+      padding: 0 var(--space-3);
+    }
+    .dash-brand__wordmark {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 34px;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      color: var(--brand);
+      font-optical-sizing: auto;
+      margin: 0;
+    }
+    .dash-nav {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+    .dash-nav__group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .dash-nav__group-title {
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      padding: 0 var(--space-3);
+      margin-bottom: var(--space-2);
+    }
+    .dash-nav__link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: 8px var(--space-3);
+      border-radius: var(--radius-pill);
+      color: var(--text-muted);
+      font-size: var(--fs-base);
+      font-weight: var(--fw-medium);
+      cursor: pointer;
+      transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+      text-decoration: none;
+      position: relative;
+    }
+    .dash-nav__link:hover {
+      background: rgba(45, 35, 29, 0.05);
+      color: var(--text);
+      text-decoration: none;
+    }
+    [data-theme="dark"] .dash-nav__link:hover {
+      background: rgba(241, 230, 214, 0.05);
+    }
+    .dash-nav__link[aria-current="page"] {
+      background: var(--brand);
+      color: #FFF7EE;
+    }
+    .dash-nav__link[aria-current="page"]:hover {
+      background: var(--brand-strong);
+    }
+    .dash-nav__icon {
+      width: 18px;
+      height: 18px;
+      flex: none;
+    }
+    .dash-nav__badge {
+      margin-left: auto;
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-semibold);
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      background: var(--attention-fill);
+      color: var(--attention-base);
+    }
+    .dash-nav__link[aria-current="page"] .dash-nav__badge {
+      background: rgba(255, 247, 238, 0.22);
+      color: #FFF7EE;
+    }
+
+    .dash-sidebar__footer {
+      margin-top: auto;
+      padding: var(--space-3);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      border-top: 0.5px solid var(--divider);
+      padding-top: var(--space-4);
+    }
+    .dash-user-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .dash-user-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dash-user-role { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* ────────── MAIN ────────── */
+    .dash-main {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .dash-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-4) var(--space-6);
+      border-bottom: 0.5px solid var(--divider);
+      background: transparent;
+      flex: none;
+    }
+    .dash-topbar__title {
+      font-size: var(--fs-md);
+      font-weight: var(--fw-semibold);
+      color: var(--text);
+    }
+    .dash-topbar__sub {
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+      margin-left: var(--space-3);
+    }
+    .dash-topbar__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .dash-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+    }
+
+    /* ────────── Cabeçalho de saudação ────────── */
+    .dash-greeting {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--space-4);
+    }
+    .dash-greeting__title {
+      font-size: var(--fs-2xl);
+      font-weight: var(--fw-semibold);
+      letter-spacing: -0.015em;
+      line-height: 1.1;
+      margin: 0;
+    }
+    .dash-greeting__date {
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ────────── Pipeline (kanban resumido) ────────── */
+    .dash-pipeline {
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      border: 0.5px solid var(--divider);
+      padding: var(--space-5);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .dash-pipeline__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .dash-pipeline__stages {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-2);
+    }
+    .dash-stage {
+      padding: var(--space-3) var(--space-3);
+      border-radius: 10px;
+      background: rgba(45, 35, 29, 0.03);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+      position: relative;
+    }
+    [data-theme="dark"] .dash-stage {
+      background: rgba(241, 230, 214, 0.04);
+    }
+    .dash-stage__label {
+      font-size: 10.5px;
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .dash-stage__value {
+      font-size: var(--fs-xl);
+      font-weight: var(--fw-semibold);
+      color: var(--text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+    .dash-stage__delta {
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+    }
+    .dash-stage__bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 2px 2px 0 0;
+      background: var(--stage-color, var(--text-faint));
+      opacity: 0.75;
+    }
+    .dash-stage--lead         { --stage-color: var(--regulatory-base); }
+    .dash-stage--procuracao   { --stage-color: var(--attention-base); }
+    .dash-stage--anvisa       { --stage-color: var(--regulatory-base); }
+    .dash-stage--pagamento    { --stage-color: var(--attention-base); }
+    .dash-stage--logistica    { --stage-color: var(--regulatory-base); }
+    .dash-stage--entregue     { --stage-color: var(--care-base); }
+
+    /* ────────── 2-col layout (atenção + recente) ────────── */
+    .dash-row-2 {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: var(--space-4);
+      min-height: 0;
+    }
+    @media (max-width: 1100px) {
+      .dash-row-2 { grid-template-columns: 1fr; }
+    }
+
+    /* Lista de pacientes precisando atenção */
+    .dash-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .dash-list__item {
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-top: 0.5px solid var(--divider);
+    }
+    .dash-list__item:first-child { border-top: 0; }
+    .dash-list__name { font-weight: var(--fw-medium); color: var(--text); font-size: var(--fs-base); }
+    .dash-list__why  { font-size: var(--fs-sm); color: var(--text-muted); margin-top: 2px; }
+    .dash-list__action { display: flex; align-items: center; gap: 6px; }
+    .dash-list__action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-pill);
+      background: transparent;
+      color: var(--text-muted);
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+    .dash-list__action-btn:hover { background: var(--divider); color: var(--text); }
+
+    /* Atividade recente */
+    .dash-activity {
+      display: flex;
+      flex-direction: column;
+    }
+    .dash-activity__item {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-top: 0.5px solid var(--divider);
+      align-items: flex-start;
+    }
+    .dash-activity__item:first-child { border-top: 0; }
+    .dash-activity__icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+      background: var(--act-fill, var(--divider));
+      color: var(--act-color, var(--text-muted));
+    }
+    .dash-activity__item--care       { --act-fill: var(--care-fill); --act-color: var(--care-base); }
+    .dash-activity__item--attention  { --act-fill: var(--attention-fill); --act-color: var(--attention-base); }
+    .dash-activity__item--regulatory { --act-fill: var(--regulatory-fill); --act-color: var(--regulatory-base); }
+    .dash-activity__text {
+      font-size: var(--fs-sm);
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .dash-activity__sub {
+      font-size: var(--fs-xs);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .dash-activity__time {
+      font-size: var(--fs-xs);
+      color: var(--text-faint);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    /* Tema toggle reaproveitando o do components.css */
+
+    /* Responsive abaixo de 960 — esconde sidebar */
+    @media (max-width: 960px) {
+      .dash-shell { grid-template-columns: 1fr; }
+      .dash-sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dash-shell">
+    <!-- ───────── SIDEBAR ───────── -->
+    <aside class="dash-sidebar">
+      <div class="dash-brand">
+        <h1 class="dash-brand__wordmark">lumi</h1>
+      </div>
+
+      <nav class="dash-nav" aria-label="Navegação principal">
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Operação</span>
+          <a class="dash-nav__link" href="#" aria-current="page">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>
+            Início
+          </a>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Pacientes
+            <span class="dash-nav__badge">47</span>
+          </a>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+            Pedidos
+          </a>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Atendimento
+          </a>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+            Relatórios
+          </a>
+        </div>
+
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Regulatório</span>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+            Anvisa
+            <span class="dash-nav__badge">3</span>
+          </a>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Logística
+          </a>
+        </div>
+
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Sistema</span>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Configurações
+          </a>
+        </div>
+      </nav>
+
+      <div class="dash-sidebar__footer">
+        <span class="avatar avatar--care">EM</span>
+        <div class="dash-user-meta">
+          <span class="dash-user-name">Emília Mendes</span>
+          <span class="dash-user-role">Admin · Setty</span>
+        </div>
+        <button class="dash-list__action-btn" aria-label="Sair">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ───────── MAIN ───────── -->
+    <div class="dash-main">
+      <header class="dash-topbar">
+        <div class="inline" style="gap: var(--space-3);">
+          <span class="dash-topbar__title">Início</span>
+          <span class="dash-topbar__sub tabular">02 jun 2026 · terça</span>
+        </div>
+
+        <div class="dash-topbar__actions">
+          <button class="icon-btn" aria-label="Busca">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <button class="icon-btn" aria-label="Notificações" style="position: relative;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="status-dot status-dot--attention" style="position: absolute; top: 7px; right: 7px; width: 7px; height: 7px;"></span>
+          </button>
+          <div class="theme-toggle" role="group" aria-label="Tema">
+            <button class="theme-toggle__opt" data-theme-set="light" aria-pressed="true" aria-label="Tema claro">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg>
+            </button>
+            <button class="theme-toggle__opt" data-theme-set="dark" aria-pressed="false" aria-label="Tema escuro">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dash-content">
+        <!-- ── Saudação + ação rápida ── -->
+        <section class="dash-greeting reveal">
+          <div>
+            <h2 class="dash-greeting__title">Bom dia, Emília.</h2>
+            <p class="dash-greeting__date">Você tem <span style="color: var(--attention-base); font-weight: var(--fw-medium);">3 ações pendentes</span> · 8 protocolos Anvisa em curso</p>
+          </div>
+          <button class="btn btn--primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo paciente
+          </button>
+        </section>
+
+        <!-- ── Stats row ── -->
+        <section class="row-stats" aria-label="Indicadores operacionais">
+          <article class="stat-card stat-card--care reveal">
+            <div class="stat-card__label">Pacientes ativos</div>
+            <div class="stat-card__value tabular">47</div>
+            <div class="stat-card__meta">+4 vs mês anterior</div>
+          </article>
+          <article class="stat-card stat-card--regulatory reveal">
+            <div class="stat-card__label">Anvisa em curso</div>
+            <div class="stat-card__value tabular">8</div>
+            <div class="stat-card__meta">2 esperando reautenticação</div>
+          </article>
+          <article class="stat-card stat-card--attention reveal">
+            <div class="stat-card__label">Pagamentos pendentes</div>
+            <div class="stat-card__value tabular">R$&nbsp;12.480<span class="stat-card__unit">·5 pac.</span></div>
+            <div class="stat-card__meta">Vencimento médio em 2 dias</div>
+          </article>
+          <article class="stat-card stat-card--regulatory reveal">
+            <div class="stat-card__label">Pedidos em trânsito</div>
+            <div class="stat-card__value tabular">3</div>
+            <div class="stat-card__meta">Memphis · saída de Assunção</div>
+          </article>
+        </section>
+
+        <!-- ── Alerta crítico ── -->
+        <section class="alert alert--attention reveal" role="status">
+          <span class="alert__icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <div class="alert__body">
+            <span class="alert__title">3 autorizações Anvisa vencem nos próximos 30 dias</span>
+            <span class="alert__desc">Maria Fernanda Costa (18d), Tiago Reis (24d), Lucia Mendonça (29d). Iniciar renovação garante continuidade sem ruptura.</span>
+          </div>
+          <div class="alert__actions">
+            <button class="btn btn--ghost btn--sm">Ver lista</button>
+            <button class="btn btn--primary btn--sm">Iniciar renovações</button>
+          </div>
+        </section>
+
+        <!-- ── Pipeline ── -->
+        <section class="dash-pipeline reveal">
+          <header class="dash-pipeline__header">
+            <div>
+              <h2 class="h-section">Pipeline · módulo Pro</h2>
+              <p class="text-muted" style="font-size: var(--fs-sm); margin: 2px 0 0;">Distribuição atual dos pacientes ativos por estágio</p>
+            </div>
+            <button class="btn btn--ghost btn--sm">Abrir kanban →</button>
+          </header>
+          <div class="dash-pipeline__stages">
+            <article class="dash-stage dash-stage--lead">
+              <span class="dash-stage__bar"></span>
+              <span class="dash-stage__label">Cadastro</span>
+              <span class="dash-stage__value tabular">3</span>
+              <span class="dash-stage__delta">novos hoje</span>
+            </article>
+            <article class="dash-stage dash-stage--procuracao">
+              <span class="dash-stage__bar"></span>
+              <span class="dash-stage__label">Procuração</span>
+              <span class="dash-stage__value tabular">4</span>
+              <span class="dash-stage__delta">aguardando assinatura</span>
+            </article>
+            <article class="dash-stage dash-stage--anvisa">
+              <span class="dash-stage__bar"></span>
+              <span class="dash-stage__label">Anvisa</span>
+              <span class="dash-stage__value tabular">8</span>
+              <span class="dash-stage__delta">em análise</span>
+            </article>
+            <article class="dash-stage dash-stage--pagamento">
+              <span class="dash-stage__bar"></span>
+              <span class="dash-stage__label">Pagamento</span>
+              <span class="dash-stage__value tabular">5</span>
+              <span class="dash-stage__delta">aguardando</span>
+            </article>
+            <article class="dash-stage dash-stage--logistica">
+              <span class="dash-stage__bar"></span>
+              <span class="dash-stage__label">Logística</span>
+              <span class="dash-stage__value tabular">3</span>
+              <span class="dash-stage__delta">em trânsito</span>
+            </article>
+            <article class="dash-stage dash-stage--entregue">
+              <span class="dash-stage__bar"></span>
+              <span class="dash-stage__label">Entregues</span>
+              <span class="dash-stage__value tabular">24</span>
+              <span class="dash-stage__delta">no mês</span>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Lista pendências + Atividade recente ── -->
+        <section class="dash-row-2">
+          <article class="card reveal" style="padding: var(--space-5);">
+            <header class="card__header">
+              <div>
+                <h2 class="card__title">Precisam de atenção hoje</h2>
+                <p class="card__subtitle">Pacientes com ação pendente — ordenados por urgência</p>
+              </div>
+              <button class="btn btn--ghost btn--sm">Ver todos →</button>
+            </header>
+            <hr class="card__divider" />
+
+            <div class="dash-list">
+              <div class="dash-list__item">
+                <span class="avatar avatar--sm avatar--attention">MF</span>
+                <div>
+                  <div class="dash-list__name">Maria Fernanda Costa</div>
+                  <div class="dash-list__why">
+                    <span class="badge badge--attention" style="margin-right: 6px;">
+                      <span class="status-dot status-dot--attention"></span>Anvisa vence em 18d
+                    </span>
+                    Iniciar renovação até 04 jun
+                  </div>
+                </div>
+                <div class="dash-list__action">
+                  <button class="dash-list__action-btn" aria-label="WhatsApp">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </button>
+                  <button class="dash-list__action-btn" aria-label="Abrir">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="dash-list__item">
+                <span class="avatar avatar--sm avatar--regulatory">JP</span>
+                <div>
+                  <div class="dash-list__name">João Pedro Almeida</div>
+                  <div class="dash-list__why">
+                    <span class="badge badge--regulatory" style="margin-right: 6px;">
+                      <span class="status-dot status-dot--regulatory"></span>Procuração pendente
+                    </span>
+                    ClickSign enviado há 3 dias · sem assinatura
+                  </div>
+                </div>
+                <div class="dash-list__action">
+                  <button class="dash-list__action-btn" aria-label="WhatsApp">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </button>
+                  <button class="dash-list__action-btn" aria-label="Abrir">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="dash-list__item">
+                <span class="avatar avatar--sm avatar--care">LM</span>
+                <div>
+                  <div class="dash-list__name">Lucia Mendonça</div>
+                  <div class="dash-list__why">
+                    <span class="badge badge--care" style="margin-right: 6px;">
+                      <span class="status-dot status-dot--care"></span>Mensagem WhatsApp
+                    </span>
+                    Última resposta 14h ontem
+                  </div>
+                </div>
+                <div class="dash-list__action">
+                  <button class="dash-list__action-btn" aria-label="WhatsApp">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </button>
+                  <button class="dash-list__action-btn" aria-label="Abrir">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card reveal" style="padding: var(--space-5);">
+            <header class="card__header">
+              <div>
+                <h2 class="card__title">Atividade recente</h2>
+                <p class="card__subtitle">Últimas 24 horas</p>
+              </div>
+            </header>
+            <hr class="card__divider" />
+
+            <div class="dash-activity">
+              <div class="dash-activity__item dash-activity__item--care">
+                <span class="dash-activity__icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                <div>
+                  <div class="dash-activity__text"><b>Autorização aprovada</b> · Carlos Henrique S.</div>
+                  <div class="dash-activity__sub tabular">Protocolo 25351.951482/2026-08</div>
+                </div>
+                <span class="dash-activity__time">há 2h</span>
+              </div>
+
+              <div class="dash-activity__item dash-activity__item--care">
+                <span class="dash-activity__icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><polyline points="3 10 12 17 21 10"/></svg>
+                </span>
+                <div>
+                  <div class="dash-activity__text"><b>Pedido entregue</b> · Beatriz Souza</div>
+                  <div class="dash-activity__sub">Memphis · BR2890014</div>
+                </div>
+                <span class="dash-activity__time">há 4h</span>
+              </div>
+
+              <div class="dash-activity__item dash-activity__item--regulatory">
+                <span class="dash-activity__icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                </span>
+                <div>
+                  <div class="dash-activity__text"><b>Novo paciente</b> · Felipe Andrade</div>
+                  <div class="dash-activity__sub">Cadastrado por consultor Pedro M.</div>
+                </div>
+                <span class="dash-activity__time">há 18h</span>
+              </div>
+
+              <div class="dash-activity__item dash-activity__item--attention">
+                <span class="dash-activity__icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </span>
+                <div>
+                  <div class="dash-activity__text"><b>Pagamento confirmado</b> · Rafael Castro</div>
+                  <div class="dash-activity__sub tabular">R$ 960,00 · Global Pace · PIX</div>
+                </div>
+                <span class="dash-activity__time">há 22h</span>
+              </div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const opts = document.querySelectorAll(".theme-toggle__opt");
+    const apply = (mode) => {
+      root.setAttribute("data-theme", mode);
+      opts.forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === mode ? "true" : "false"));
+      try { localStorage.setItem("d10-theme", mode); } catch (_) {}
+    };
+    opts.forEach((b) => b.addEventListener("click", () => apply(b.dataset.themeSet)));
+    try {
+      const saved = localStorage.getItem("d10-theme");
+      if (saved === "light" || saved === "dark") apply(saved);
+    } catch (_) {}
+  </script>
+</body>
+</html>
