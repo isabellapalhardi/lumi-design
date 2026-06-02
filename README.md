@@ -37,6 +37,7 @@ lumi-design/
 | 03 | `pages/pacientes.html` | **Fechado** — lista de pacientes · toggle grade ↔ tabela (persistido em localStorage) · busca + filtros por estágio · pulso de alerta nos vencimentos urgentes |
 | 04 | `pages/paciente-detalhe.html` | **Fechado** — detalhe denso da paciente · identidade + badges + ações · stats semânticos · alerta crítico Anvisa · prescrição + linha do tratamento · histórico de pedidos |
 | 05 | `pages/paciente-novo.html` | **Fechado** — form multi-step de cadastro (4 etapas) · stepper visual · radio pills · auto-save · footer com Voltar/Próximo |
+| 06 | `pages/pedidos.html` | **Fechado** — lista de pedidos · 4 mini-stats · toggle grade/tabela · cards com mini-timeline horizontal de 6 estágios + produto destacado com border-left coral |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 
