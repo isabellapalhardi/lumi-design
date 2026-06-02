@@ -370,23 +370,39 @@
 .status-dot--attention  { background: var(--attention-base); }
 .status-dot--regulatory { background: var(--regulatory-base); }
 
+/* Pulso de alerta — duas camadas defasadas se expandindo a partir do dot.
+   Usar em coisas urgentes (vence em X dias, reprovado, ação imediata),
+   nunca em estados positivos/neutros. A intensidade vem da cor do --status-dot
+   subjacente (currentColor), então combina naturalmente com attention/regulatory. */
 .status-dot--pulse {
   position: relative;
+  --pulse-color: currentColor;
 }
+.status-dot--pulse::before,
 .status-dot--pulse::after {
   content: "";
   position: absolute;
-  inset: -4px;
+  inset: -3px;
   border-radius: var(--radius-pill);
-  background: currentColor;
-  opacity: 0.25;
-  animation: pulse 1.8s var(--ease-out) infinite;
+  background: var(--pulse-color);
   pointer-events: none;
+  animation: pulse 1.4s var(--ease-out) infinite;
 }
+.status-dot--pulse::after { animation-delay: 0.7s; }
+
 @keyframes pulse {
-  0%   { transform: scale(0.6); opacity: 0.35; }
-  100% { transform: scale(1.6); opacity: 0; }
+  0%   { transform: scale(0.7); opacity: 0.7; }
+  60%  { opacity: 0.18; }
+  100% { transform: scale(2.6); opacity: 0; }
 }
+
+/* Background do próprio dot vira inerte porque o ::before/::after pulsa por cima.
+   Mas queremos o dot continuar visível ao centro, então:
+   o status-dot já tem `background: var(--*-base)`, e currentColor (text muted)
+   é o que define os anéis. Forçar o pulse a usar a base color do dot: */
+.status-dot--pulse.status-dot--care      { --pulse-color: var(--care-base); }
+.status-dot--pulse.status-dot--attention { --pulse-color: var(--attention-base); }
+.status-dot--pulse.status-dot--regulatory{ --pulse-color: var(--regulatory-base); }
 
 /* ────────────────────────────────────────────────────────────
    Avatar — circular
