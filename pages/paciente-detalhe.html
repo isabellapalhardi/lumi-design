@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Maria Fernanda Costa · lumi</title>
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <style>
+    html { margin: 0; padding: 0; background: var(--brand); }
+    body {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: 0;
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      background: var(--brand);
+      overflow: hidden;
+    }
+
+    .dash-shell {
+      flex: 1;
+      height: 100%;
+      align-self: stretch;
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px -28px rgba(45, 35, 29, 0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.30), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.20), transparent 65%),
+        rgba(236, 224, 204, 0.88);
+    }
+    [data-theme="dark"] .dash-shell {
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.22), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.16), transparent 65%),
+        rgba(34, 28, 24, 0.96);
+    }
+
+    /* SIDEBAR (mesmo padrão) */
+    .dash-sidebar {
+      padding: var(--space-5) var(--space-4) var(--space-4);
+      display: flex; flex-direction: column;
+      gap: var(--space-6);
+      border-right: 0.5px solid var(--divider);
+      overflow-y: auto;
+      background: transparent;
+    }
+    .dash-brand { padding: 0 var(--space-3); }
+    .dash-brand__wordmark {
+      font-family: var(--font-serif); font-weight: 500;
+      font-size: 34px; letter-spacing: -0.02em; line-height: 1;
+      color: var(--brand); font-optical-sizing: auto; margin: 0;
+    }
+    .dash-nav { display: flex; flex-direction: column; gap: var(--space-5); }
+    .dash-nav__group { display: flex; flex-direction: column; gap: 2px; }
+    .dash-nav__group-title {
+      font-size: var(--fs-xs); font-weight: var(--fw-semibold);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-faint); padding: 0 var(--space-3); margin-bottom: var(--space-2);
+    }
+    .dash-nav__link {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: 8px var(--space-3); border-radius: var(--radius-pill);
+      color: var(--text-muted); font-size: var(--fs-base);
+      font-weight: var(--fw-medium); cursor: pointer;
+      transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+      text-decoration: none; position: relative;
+    }
+    .dash-nav__link:hover { background: rgba(45, 35, 29, 0.05); color: var(--text); text-decoration: none; }
+    [data-theme="dark"] .dash-nav__link:hover { background: rgba(241, 230, 214, 0.05); }
+    .dash-nav__link[aria-current="page"] { background: var(--brand); color: #FFF7EE; }
+    .dash-nav__link[aria-current="page"]:hover { background: var(--brand-strong); }
+    .dash-nav__icon { width: 18px; height: 18px; flex: none; }
+    .dash-nav__badge {
+      margin-left: auto; font-size: var(--fs-xs); font-weight: var(--fw-semibold);
+      padding: 1px 6px; border-radius: var(--radius-pill);
+      background: var(--attention-fill); color: var(--attention-base);
+    }
+    .dash-nav__link[aria-current="page"] .dash-nav__badge { background: rgba(255, 247, 238, 0.22); color: #FFF7EE; }
+
+    .dash-sidebar__footer {
+      margin-top: auto; padding: var(--space-3);
+      display: flex; align-items: center; gap: var(--space-3);
+      border-top: 0.5px solid var(--divider); padding-top: var(--space-4);
+    }
+    .dash-user-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .dash-user-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dash-user-role { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* MAIN */
+    .dash-main { display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+    .dash-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--space-4) var(--space-6);
+      border-bottom: 0.5px solid var(--divider);
+      background: transparent; flex: none;
+    }
+    .dash-topbar__title { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); }
+    .dash-topbar__actions { display: flex; align-items: center; gap: var(--space-3); }
+
+    .dash-content {
+      flex: 1; overflow-y: auto;
+      padding: var(--space-6);
+      display: flex; flex-direction: column;
+      gap: var(--space-5);
+    }
+
+    /* ────────── Patient header card ────────── */
+    .pat-header {
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      padding: var(--space-5);
+      border: 0.5px solid var(--divider);
+      box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; gap: var(--space-5);
+    }
+    .pat-header__identity { display: flex; flex-direction: column; gap: var(--space-2); flex: 1; min-width: 0; }
+    .pat-header__title-row { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+    .pat-header__name {
+      font-size: var(--fs-2xl); font-weight: var(--fw-semibold);
+      letter-spacing: -0.015em; line-height: 1.1; margin: 0;
+    }
+    .pat-header__meta {
+      display: flex; align-items: center; gap: var(--space-4);
+      font-size: var(--fs-sm); color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+    .pat-header__meta-dot { color: var(--text-faint); }
+    .pat-header__actions { display: flex; align-items: center; gap: var(--space-2); flex: none; }
+
+    /* ────────── Row 2 col: prescrição + tratamento ────────── */
+    .pat-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    @media (max-width: 1100px) {
+      .pat-row-2 { grid-template-columns: 1fr; }
+    }
+
+    /* Timeline interna */
+    .pat-timeline { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+    .pat-timeline__item { display: flex; gap: var(--space-3); align-items: flex-start; }
+    .pat-timeline__dot {
+      width: 14px; height: 14px; border-radius: var(--radius-pill);
+      flex: none; margin-top: 3px;
+      background: var(--divider-strong);
+      box-shadow: 0 0 0 4px rgba(45, 35, 29, 0.05);
+    }
+    [data-theme="dark"] .pat-timeline__dot { box-shadow: 0 0 0 4px rgba(241, 230, 214, 0.04); }
+    .pat-timeline__dot--care      { background: var(--care-base); box-shadow: 0 0 0 4px var(--care-fill); }
+    .pat-timeline__dot--attention { background: var(--attention-base); box-shadow: 0 0 0 4px var(--attention-fill); }
+    .pat-timeline__dot--regulatory{ background: var(--regulatory-base); box-shadow: 0 0 0 4px var(--regulatory-fill); }
+    .pat-timeline__content { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .pat-timeline__title { font-weight: var(--fw-medium); color: var(--text); font-size: var(--fs-sm); }
+    .pat-timeline__title--muted { font-weight: var(--fw-medium); color: var(--text-muted); font-size: var(--fs-sm); }
+    .pat-timeline__sub { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* Histórico tabela */
+    .pat-history-wrap {
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      border: 0.5px solid var(--divider);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .pat-history-header {
+      padding: var(--space-4) var(--space-5);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: var(--space-3); flex-wrap: wrap;
+      border-bottom: 0.5px solid var(--divider);
+    }
+    .pat-history-header h2 { margin: 0; font-size: var(--fs-lg); font-weight: var(--fw-semibold); letter-spacing: -0.01em; }
+    .pat-history-header p { margin: 2px 0 0; font-size: var(--fs-sm); color: var(--text-muted); }
+    .pat-history-table { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); }
+    .pat-history-table thead th {
+      text-align: left; font-weight: var(--fw-semibold);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      font-size: var(--fs-xs); color: var(--text-faint);
+      padding: var(--space-3) var(--space-5);
+      border-bottom: 0.5px solid var(--divider);
+      white-space: nowrap;
+    }
+    .pat-history-table tbody td {
+      padding: var(--space-3) var(--space-5);
+      border-bottom: 0.5px solid var(--divider);
+      vertical-align: middle;
+    }
+    .pat-history-table tbody tr:last-child td { border-bottom: 0; }
+    .pat-history-table tbody tr { transition: background var(--duration-fast) var(--ease-out); }
+    .pat-history-table tbody tr:hover { background: rgba(45, 35, 29, 0.03); }
+    [data-theme="dark"] .pat-history-table tbody tr:hover { background: rgba(241, 230, 214, 0.04); }
+    .pat-history-table .col-num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    /* Hover effect for actions on rows */
+    .pat-actions-btn {
+      width: 30px; height: 30px;
+      border-radius: var(--radius-pill);
+      background: transparent;
+      color: var(--text-muted);
+      border: 0; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+    .pat-actions-btn:hover { background: var(--divider); color: var(--text); }
+
+    @media (max-width: 960px) {
+      .dash-shell { grid-template-columns: 1fr; }
+      .dash-sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dash-shell">
+    <!-- ───────── SIDEBAR ───────── -->
+    <aside class="dash-sidebar">
+      <div class="dash-brand"><h1 class="dash-brand__wordmark">lumi</h1></div>
+
+      <nav class="dash-nav" aria-label="Navegação principal">
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Operação</span>
+          <a class="dash-nav__link" href="dashboard.html">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>
+            Início
+          </a>
+          <a class="dash-nav__link" href="pacientes.html" aria-current="page">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Pacientes
+            <span class="dash-nav__badge">47</span>
+          </a>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+            Pedidos
+          </a>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Atendimento
+          </a>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>
+            Relatórios
+          </a>
+        </div>
+
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Regulatório</span>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>
+            Anvisa
+            <span class="dash-nav__badge">3</span>
+          </a>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Logística
+          </a>
+        </div>
+
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Sistema</span>
+          <a class="dash-nav__link" href="#">
+            <svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Configurações
+          </a>
+        </div>
+      </nav>
+
+      <div class="dash-sidebar__footer">
+        <span class="avatar avatar--care">EM</span>
+        <div class="dash-user-meta">
+          <span class="dash-user-name">Emília Mendes</span>
+          <span class="dash-user-role">Admin · Setty</span>
+        </div>
+        <button class="pat-actions-btn" aria-label="Sair">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ───────── MAIN ───────── -->
+    <div class="dash-main">
+      <header class="dash-topbar">
+        <div class="inline" style="gap: var(--space-3); font-size: var(--fs-sm);">
+          <a href="dashboard.html" style="color: var(--text-muted); text-decoration: none;">Início</a>
+          <span style="color: var(--text-faint);">/</span>
+          <a href="pacientes.html" style="color: var(--text-muted); text-decoration: none;">Pacientes</a>
+          <span style="color: var(--text-faint);">/</span>
+          <span class="dash-topbar__title">Maria Fernanda Costa</span>
+        </div>
+
+        <div class="dash-topbar__actions">
+          <button class="icon-btn" aria-label="Notificações" style="position: relative;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="status-dot status-dot--attention" style="position: absolute; top: 7px; right: 7px; width: 7px; height: 7px;"></span>
+          </button>
+          <div class="theme-toggle" role="group" aria-label="Tema">
+            <button class="theme-toggle__opt" data-theme-set="light" aria-pressed="true" aria-label="Tema claro">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg>
+            </button>
+            <button class="theme-toggle__opt" data-theme-set="dark" aria-pressed="false" aria-label="Tema escuro">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dash-content">
+        <!-- ── Patient header ── -->
+        <section class="pat-header reveal">
+          <span class="avatar avatar--xl avatar--care" aria-hidden="true">MF</span>
+          <div class="pat-header__identity">
+            <div class="pat-header__title-row">
+              <h1 class="pat-header__name">Maria Fernanda Costa</h1>
+              <span class="badge badge--care">
+                <span class="status-dot status-dot--care"></span>Tratamento ativo
+              </span>
+              <span class="badge badge--attention">
+                <span class="status-dot status-dot--attention status-dot--pulse"></span>Anvisa vence em 18d
+              </span>
+            </div>
+            <div class="pat-header__meta">
+              <span class="tabular">CPF 487.123.998-04</span>
+              <span class="pat-header__meta-dot">·</span>
+              <span>47 anos</span>
+              <span class="pat-header__meta-dot">·</span>
+              <span>Pinheiros, São Paulo · SP</span>
+              <span class="pat-header__meta-dot">·</span>
+              <span class="tabular">+55 11 98244-1027</span>
+            </div>
+          </div>
+          <div class="pat-header__actions">
+            <button class="btn btn--secondary btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              WhatsApp
+            </button>
+            <button class="btn btn--primary btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Novo pedido
+            </button>
+            <button class="icon-btn" aria-label="Mais ações">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- ── Stats ── -->
+        <section class="row-stats reveal" aria-label="Indicadores do paciente">
+          <article class="stat-card stat-card--care">
+            <div class="stat-card__label">Tratamento</div>
+            <div class="stat-card__value tabular">6<span class="stat-card__unit">meses</span></div>
+            <div class="stat-card__meta">Desde 14 dez 2025</div>
+          </article>
+
+          <article class="stat-card stat-card--attention">
+            <div class="stat-card__label">Autorização Anvisa</div>
+            <div class="stat-card__value tabular">18<span class="stat-card__unit">dias</span></div>
+            <div class="stat-card__meta">Vence em 19 jun 2026</div>
+          </article>
+
+          <article class="stat-card stat-card--regulatory">
+            <div class="stat-card__label">Pedidos</div>
+            <div class="stat-card__value tabular">4</div>
+            <div class="stat-card__meta">3 entregues · 1 em trânsito</div>
+          </article>
+
+          <article class="stat-card stat-card--care">
+            <div class="stat-card__label">Adesão informada</div>
+            <div class="stat-card__value tabular">92<span class="stat-card__unit">%</span></div>
+            <div class="stat-card__meta">Pesquisa de 12 mai 2026</div>
+          </article>
+        </section>
+
+        <!-- ── Alerta crítico ── -->
+        <section class="alert alert--attention reveal" role="status">
+          <span class="alert__icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <div class="alert__body">
+            <span class="alert__title">Autorização Anvisa vence em 18 dias</span>
+            <span class="alert__desc">Iniciar renovação até 04 jun 2026 garante continuidade sem ruptura no tratamento. Protocolo atual: <span class="tabular">25351.948271/2025-43</span>.</span>
+          </div>
+          <div class="alert__actions">
+            <button class="btn btn--ghost btn--sm">Adiar</button>
+            <button class="btn btn--primary btn--sm">Iniciar renovação</button>
+          </div>
+        </section>
+
+        <!-- ── Prescrição + Tratamento ── -->
+        <section class="pat-row-2 reveal">
+          <article class="card">
+            <header class="card__header">
+              <div>
+                <h2 class="card__title">Prescrição atual</h2>
+                <p class="card__subtitle">Emitida em 14 dez 2025 · válida até 14 jun 2026</p>
+              </div>
+              <span class="badge badge--regulatory">Anvisa autorizada</span>
+            </header>
+            <hr class="card__divider" />
+
+            <div class="stack stack--md">
+              <div class="inline inline--between">
+                <span class="label">Médico responsável</span>
+                <span class="text-muted" style="font-size: var(--fs-sm);">CRM 132445/SP</span>
+              </div>
+              <div class="inline" style="gap: var(--space-3);">
+                <span class="avatar avatar--regulatory">CA</span>
+                <div class="stack stack--sm">
+                  <span style="font-weight: var(--fw-medium);">Dr. Carlos Andrade</span>
+                  <span class="text-muted" style="font-size: var(--fs-sm);">Neurologia · Hospital Albert Einstein</span>
+                </div>
+              </div>
+            </div>
+
+            <hr class="card__divider" />
+
+            <div class="stack stack--md">
+              <span class="label">Produto prescrito</span>
+              <div class="inline inline--between">
+                <span style="font-weight: var(--fw-medium);">CBD Full Spectrum 3000mg · 30ml</span>
+                <span class="tabular text-muted" style="font-size: var(--fs-sm);">100 mg/ml</span>
+              </div>
+              <div class="inline" style="gap: var(--space-4); font-size: var(--fs-sm);">
+                <span><span class="text-faint">Posologia</span>&nbsp;&nbsp;<span class="tabular">2 gotas, 2× ao dia</span></span>
+                <span class="text-faint">·</span>
+                <span><span class="text-faint">Duração</span>&nbsp;&nbsp;6 meses</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="card">
+            <header class="card__header">
+              <div>
+                <h2 class="card__title">Linha do tratamento</h2>
+                <p class="card__subtitle">Acompanhamento contínuo · cohort Jan 2026</p>
+              </div>
+              <span class="badge badge--care">
+                <span class="status-dot status-dot--care"></span>
+                Em curso
+              </span>
+            </header>
+            <hr class="card__divider" />
+
+            <ol class="pat-timeline">
+              <li class="pat-timeline__item">
+                <span class="pat-timeline__dot pat-timeline__dot--care"></span>
+                <div class="pat-timeline__content">
+                  <span class="pat-timeline__title">Início do tratamento</span>
+                  <span class="pat-timeline__sub">14 dez 2025 · primeira dose entregue em 21 dez</span>
+                </div>
+              </li>
+              <li class="pat-timeline__item">
+                <span class="pat-timeline__dot pat-timeline__dot--care"></span>
+                <div class="pat-timeline__content">
+                  <span class="pat-timeline__title">Reavaliação clínica · 90 dias</span>
+                  <span class="pat-timeline__sub">12 mar 2026 · dosagem mantida · sem efeitos adversos</span>
+                </div>
+              </li>
+              <li class="pat-timeline__item">
+                <span class="pat-timeline__dot pat-timeline__dot--attention"></span>
+                <div class="pat-timeline__content">
+                  <span class="pat-timeline__title">Próxima consulta</span>
+                  <span class="pat-timeline__sub">12 jun 2026 · presencial · 14h00</span>
+                </div>
+              </li>
+              <li class="pat-timeline__item">
+                <span class="pat-timeline__dot"></span>
+                <div class="pat-timeline__content">
+                  <span class="pat-timeline__title pat-timeline__title--muted">Encerramento previsto</span>
+                  <span class="pat-timeline__sub">14 jun 2026 · pendente reavaliação</span>
+                </div>
+              </li>
+            </ol>
+          </article>
+        </section>
+
+        <!-- ── Histórico ── -->
+        <section class="pat-history-wrap reveal">
+          <header class="pat-history-header">
+            <div>
+              <h2>Histórico de pedidos</h2>
+              <p>Todos os pedidos vinculados a este paciente</p>
+            </div>
+            <div class="inline inline--sm">
+              <button class="btn btn--ghost btn--sm">Exportar CSV</button>
+              <button class="btn btn--secondary btn--sm">Filtros</button>
+            </div>
+          </header>
+
+          <table class="pat-history-table" aria-label="Histórico de pedidos">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Produto</th>
+                <th>Logística</th>
+                <th>Status</th>
+                <th class="col-num">Valor</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tabular">04 mai 2026</td>
+                <td>CBD Full Spectrum 3000mg · 30ml</td>
+                <td class="text-muted">Memphis · BR2934118</td>
+                <td><span class="badge badge--attention"><span class="status-dot status-dot--attention"></span>Em trânsito</span></td>
+                <td class="col-num tabular">R$&nbsp;960,00</td>
+                <td style="text-align: right; width: 40px;"><button class="pat-actions-btn" aria-label="Detalhes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></td>
+              </tr>
+              <tr>
+                <td class="tabular">06 mar 2026</td>
+                <td>CBD Full Spectrum 3000mg · 30ml</td>
+                <td class="text-muted">Memphis · BR2918734</td>
+                <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Entregue</span></td>
+                <td class="col-num tabular">R$&nbsp;960,00</td>
+                <td style="text-align: right; width: 40px;"><button class="pat-actions-btn" aria-label="Detalhes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></td>
+              </tr>
+              <tr>
+                <td class="tabular">04 fev 2026</td>
+                <td>CBD Full Spectrum 3000mg · 30ml</td>
+                <td class="text-muted">Memphis · BR2901126</td>
+                <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Entregue</span></td>
+                <td class="col-num tabular">R$&nbsp;960,00</td>
+                <td style="text-align: right; width: 40px;"><button class="pat-actions-btn" aria-label="Detalhes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></td>
+              </tr>
+              <tr>
+                <td class="tabular">21 dez 2025</td>
+                <td>CBD Full Spectrum 3000mg · 30ml</td>
+                <td class="text-muted">Memphis · BR2887402</td>
+                <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Entregue</span></td>
+                <td class="col-num tabular">R$&nbsp;960,00</td>
+                <td style="text-align: right; width: 40px;"><button class="pat-actions-btn" aria-label="Detalhes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const opts = document.querySelectorAll(".theme-toggle__opt");
+    const apply = (mode) => {
+      root.setAttribute("data-theme", mode);
+      opts.forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === mode ? "true" : "false"));
+      try { localStorage.setItem("d10-theme", mode); } catch (_) {}
+    };
+    opts.forEach((b) => b.addEventListener("click", () => apply(b.dataset.themeSet)));
+    try {
+      const saved = localStorage.getItem("d10-theme");
+      if (saved === "light" || saved === "dark") apply(saved);
+    } catch (_) {}
+  </script>
+</body>
+</html>

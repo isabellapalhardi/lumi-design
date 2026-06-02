@@ -35,6 +35,7 @@ lumi-design/
 | 01 | `pages/login.html` | **Fechado** — moldura coral, painel em vidro fosco, wordmark central, form com border coral |
 | 02 | `pages/dashboard.html` | **Fechado** — início do admin · sidebar + topbar + saudação + stats semânticos + alerta Anvisa + pipeline do módulo Pro + lista de atenção + atividade recente |
 | 03 | `pages/pacientes.html` | **Fechado** — lista de pacientes · toggle grade ↔ tabela (persistido em localStorage) · busca + filtros por estágio · pulso de alerta nos vencimentos urgentes |
+| 04 | `pages/paciente-detalhe.html` | **Fechado** — detalhe denso da paciente · identidade + badges + ações · stats semânticos · alerta crítico Anvisa · prescrição + linha do tratamento · histórico de pedidos |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 
