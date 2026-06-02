@@ -38,6 +38,7 @@ lumi-design/
 | 04 | `pages/paciente-detalhe.html` | **Fechado** — detalhe denso da paciente · identidade + badges + ações · stats semânticos · alerta crítico Anvisa · prescrição + linha do tratamento · histórico de pedidos |
 | 05 | `pages/paciente-novo.html` | **Fechado** — form multi-step de cadastro (4 etapas) · stepper visual · radio pills · auto-save · footer com Voltar/Próximo |
 | 06 | `pages/pedidos.html` | **Fechado** — lista de pedidos · 4 mini-stats · toggle grade/tabela · cards com mini-timeline horizontal de 6 estágios + produto destacado com border-left coral |
+| 07 | `pages/pedido-detalhe.html` | **Fechado** — detalhe do pedido · header com código + paciente clicável · hero do estágio atual + barra de progresso · timeline vertical de 6 estágios com sub-eventos do tracking Memphis · side col com paciente + produto + breakdown financeiro |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 
