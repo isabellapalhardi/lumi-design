@@ -39,6 +39,7 @@ lumi-design/
 | 05 | `pages/paciente-novo.html` | **Fechado** — form multi-step de cadastro (4 etapas) · stepper visual · radio pills · auto-save · footer com Voltar/Próximo |
 | 06 | `pages/pedidos.html` | **Fechado** — lista de pedidos · 4 mini-stats · toggle grade/tabela · cards com mini-timeline horizontal de 6 estágios + produto destacado com border-left coral |
 | 07 | `pages/pedido-detalhe.html` | **Fechado** — detalhe do pedido · header com código + paciente clicável · hero do estágio atual + barra de progresso · timeline vertical de 6 estágios com sub-eventos do tracking Memphis · side col com paciente + produto + breakdown financeiro |
+| 08 | `pages/anvisa.html` | **Fechado** — saúde operacional do bot Anvisa · alerta crítico de sessão Gov.br + 4 mini-stats + card do bot (sessão / fila pg-boss / taxa de sucesso / procuradora) + lista de protocolos com estados captcha-pendente, autorizada, em análise e renovação |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 

@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anvisa · lumi</title>
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <style>
+    html { margin: 0; padding: 0; background: var(--brand); }
+    body {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: 0; padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      background: var(--brand);
+      overflow: hidden;
+    }
+    .dash-shell {
+      flex: 1; height: 100%; align-self: stretch;
+      display: grid; grid-template-columns: 248px 1fr;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px -28px rgba(45, 35, 29, 0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.30), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.20), transparent 65%),
+        rgba(236, 224, 204, 0.88);
+    }
+    [data-theme="dark"] .dash-shell {
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.22), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.16), transparent 65%),
+        rgba(34, 28, 24, 0.96);
+    }
+
+    /* SIDEBAR */
+    .dash-sidebar { padding: var(--space-5) var(--space-4) var(--space-4); display: flex; flex-direction: column; gap: var(--space-6); border-right: 0.5px solid var(--divider); overflow-y: auto; background: transparent; }
+    .dash-brand { padding: 0 var(--space-3); }
+    .dash-brand__wordmark { font-family: var(--font-serif); font-weight: 500; font-size: 34px; letter-spacing: -0.02em; line-height: 1; color: var(--brand); font-optical-sizing: auto; margin: 0; }
+    .dash-nav { display: flex; flex-direction: column; gap: var(--space-5); }
+    .dash-nav__group { display: flex; flex-direction: column; gap: 2px; }
+    .dash-nav__group-title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); padding: 0 var(--space-3); margin-bottom: var(--space-2); }
+    .dash-nav__link { display: flex; align-items: center; gap: var(--space-3); padding: 8px var(--space-3); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--fs-base); font-weight: var(--fw-medium); cursor: pointer; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); text-decoration: none; position: relative; }
+    .dash-nav__link:hover { background: rgba(45, 35, 29, 0.05); color: var(--text); text-decoration: none; }
+    [data-theme="dark"] .dash-nav__link:hover { background: rgba(241, 230, 214, 0.05); }
+    .dash-nav__link[aria-current="page"] { background: var(--brand); color: #FFF7EE; }
+    .dash-nav__link[aria-current="page"]:hover { background: var(--brand-strong); }
+    .dash-nav__icon { width: 18px; height: 18px; flex: none; }
+    .dash-nav__badge { margin-left: auto; font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 1px 6px; border-radius: var(--radius-pill); background: var(--attention-fill); color: var(--attention-base); }
+    .dash-nav__link[aria-current="page"] .dash-nav__badge { background: rgba(255, 247, 238, 0.22); color: #FFF7EE; }
+    .dash-sidebar__footer { margin-top: auto; padding: var(--space-3); display: flex; align-items: center; gap: var(--space-3); border-top: 0.5px solid var(--divider); padding-top: var(--space-4); }
+    .dash-user-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .dash-user-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dash-user-role { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* MAIN */
+    .dash-main { display: flex; flex-direction: column; overflow: hidden; min-width: 0; min-height: 0; }
+    .dash-topbar { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-6); border-bottom: 0.5px solid var(--divider); background: transparent; flex: none; }
+    .dash-topbar__title { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); }
+    .dash-topbar__actions { display: flex; align-items: center; gap: var(--space-3); }
+
+    .dash-content { flex: 1; overflow-y: auto; min-height: 0; padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+
+    /* Header */
+    .anv-header { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+    .anv-header__title { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); letter-spacing: -0.015em; line-height: 1.1; margin: 0; display: inline-flex; align-items: baseline; gap: var(--space-3); }
+    .anv-header__count { font-size: var(--fs-md); font-weight: var(--fw-medium); color: var(--text-muted); letter-spacing: 0; }
+    .anv-header__actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+    /* Mini-stats */
+    .anv-mini-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+    .anv-mini-stat { background: var(--surface); border-radius: var(--radius-card); border: 0.5px solid var(--divider); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4); position: relative; overflow: hidden; }
+    .anv-mini-stat::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--mini-color, var(--text-faint)); opacity: 0.75; }
+    .anv-mini-stat--care { --mini-color: var(--care-base); }
+    .anv-mini-stat--attention { --mini-color: var(--attention-base); }
+    .anv-mini-stat--regulatory { --mini-color: var(--regulatory-base); }
+    .anv-mini-stat__label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .anv-mini-stat__value { font-size: var(--fs-xl); font-weight: var(--fw-semibold); color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; line-height: 1.2; margin-top: 2px; }
+    .anv-mini-stat__meta { font-size: var(--fs-xs); color: var(--text-muted); }
+    @media (max-width: 880px) { .anv-mini-stats { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ────────── Bot Status (card grande) ────────── */
+    .bot-card {
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      border: 0.5px solid var(--divider);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-5);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: var(--space-5);
+      align-items: center;
+      position: relative;
+    }
+    .bot-card__icon {
+      width: 56px; height: 56px;
+      border-radius: var(--radius-pill);
+      background: var(--care-fill);
+      color: var(--care-base);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: none;
+      position: relative;
+    }
+    .bot-card__icon::after {
+      content: "";
+      position: absolute;
+      bottom: -2px; right: -2px;
+      width: 14px; height: 14px;
+      background: var(--care-base);
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--surface);
+    }
+    .bot-card__info { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+    .bot-card__title-row { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+    .bot-card__title { font-size: var(--fs-lg); font-weight: var(--fw-semibold); color: var(--text); margin: 0; letter-spacing: -0.01em; }
+    .bot-card__rows {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .bot-card__row {
+      display: flex; flex-direction: column; gap: 2px;
+      padding-right: var(--space-3);
+      border-right: 0.5px solid var(--divider);
+    }
+    .bot-card__row:last-child { border-right: 0; }
+    .bot-card__row-label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .bot-card__row-value { font-size: var(--fs-md); font-weight: var(--fw-medium); color: var(--text); font-variant-numeric: tabular-nums; }
+    .bot-card__row-value--warning { color: var(--attention-base); }
+    .bot-card__row-sub { font-size: var(--fs-xs); color: var(--text-muted); }
+    .bot-card__actions { display: flex; flex-direction: column; gap: var(--space-2); flex: none; }
+    @media (max-width: 980px) {
+      .bot-card { grid-template-columns: 1fr; }
+      .bot-card__rows { grid-template-columns: repeat(2, 1fr); }
+      .bot-card__actions { flex-direction: row; }
+    }
+
+    /* ────────── Toolbar ────────── */
+    .pac-toolbar {
+      background: var(--surface);
+      border: 0.5px solid var(--divider);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-3) var(--space-4);
+      display: flex; align-items: center;
+      gap: var(--space-3); flex-wrap: wrap;
+    }
+    .pac-search { flex: 1; min-width: 240px; position: relative; }
+    .pac-search__input { width: 100%; background: transparent; border: 0; outline: none; font-family: inherit; font-size: var(--fs-base); color: var(--text); padding: 6px 6px 6px 32px; }
+    .pac-search__input::placeholder { color: var(--text-faint); }
+    .pac-search__icon { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); color: var(--text-faint); }
+    .pac-toolbar__divider { width: 0.5px; height: 22px; background: var(--divider-strong); }
+    .pac-filter { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--radius-pill); background: var(--sidebar); color: var(--text); font-size: var(--fs-sm); font-weight: var(--fw-medium); border: 0; cursor: pointer; transition: background var(--duration-fast) var(--ease-out); }
+    .pac-filter:hover { background: var(--divider-strong); }
+    .pac-filter--active { background: var(--brand); color: #FFF7EE; }
+    .pac-filter--active:hover { background: var(--brand-strong); }
+    .pac-filter__count { font-size: var(--fs-xs); opacity: 0.7; font-variant-numeric: tabular-nums; }
+
+    /* ────────── Lista de protocolos ────────── */
+    .anv-list {
+      background: var(--surface);
+      border: 0.5px solid var(--divider);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .anv-item {
+      display: grid;
+      grid-template-columns: 220px 1fr 160px auto;
+      gap: var(--space-4);
+      padding: var(--space-4) var(--space-5);
+      border-bottom: 0.5px solid var(--divider);
+      align-items: center;
+      cursor: pointer;
+      transition: background var(--duration-fast) var(--ease-out);
+    }
+    .anv-item:last-child { border-bottom: 0; }
+    .anv-item:hover { background: rgba(45, 35, 29, 0.03); }
+    [data-theme="dark"] .anv-item:hover { background: rgba(241, 230, 214, 0.04); }
+
+    .anv-item--needs-human {
+      background: linear-gradient(90deg, rgba(201, 152, 83, 0.05) 0%, transparent 30%);
+    }
+
+    .anv-protocol { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .anv-protocol__num { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); font-variant-numeric: tabular-nums; }
+    .anv-protocol__sub { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    .anv-patient { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+    .anv-patient__meta { display: flex; flex-direction: column; min-width: 0; }
+    .anv-patient__name { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--fs-md); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.005em; }
+    .anv-patient__cpf { font-size: var(--fs-sm); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+    .anv-status { display: flex; flex-direction: column; gap: 4px; }
+    .anv-status__time { font-size: var(--fs-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+    .anv-actions { display: flex; gap: 4px; justify-content: flex-end; flex: none; }
+    .anv-actions__btn {
+      width: 32px; height: 32px;
+      border-radius: var(--radius-pill);
+      background: transparent;
+      color: var(--text-muted);
+      border: 0; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+    .anv-actions__btn:hover { background: var(--divider); color: var(--text); }
+
+    @media (max-width: 880px) {
+      .anv-item { grid-template-columns: 1fr; gap: var(--space-2); }
+    }
+    @media (max-width: 960px) {
+      .dash-shell { grid-template-columns: 1fr; }
+      .dash-sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dash-shell">
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar">
+      <div class="dash-brand"><h1 class="dash-brand__wordmark">lumi</h1></div>
+      <nav class="dash-nav">
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Operação</span>
+          <a class="dash-nav__link" href="dashboard.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>Início</a>
+          <a class="dash-nav__link" href="pacientes.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pacientes<span class="dash-nav__badge">47</span></a>
+          <a class="dash-nav__link" href="pedidos.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>Pedidos<span class="dash-nav__badge">12</span></a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Atendimento</a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Relatórios</a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Regulatório</span>
+          <a class="dash-nav__link" href="#" aria-current="page"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Anvisa<span class="dash-nav__badge">3</span></a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Logística</a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Sistema</span>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</a>
+        </div>
+      </nav>
+      <div class="dash-sidebar__footer">
+        <span class="avatar avatar--care">EM</span>
+        <div class="dash-user-meta">
+          <span class="dash-user-name">Emília Mendes</span>
+          <span class="dash-user-role">Admin · Setty</span>
+        </div>
+        <button class="anv-actions__btn" aria-label="Sair"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="dash-main">
+      <header class="dash-topbar">
+        <div class="inline" style="gap: var(--space-3); font-size: var(--fs-sm);">
+          <a href="dashboard.html" style="color: var(--text-muted); text-decoration: none;">Início</a>
+          <span style="color: var(--text-faint);">/</span>
+          <span class="dash-topbar__title">Anvisa</span>
+        </div>
+        <div class="dash-topbar__actions">
+          <button class="icon-btn" aria-label="Notificações" style="position: relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+          <div class="theme-toggle" role="group" aria-label="Tema">
+            <button class="theme-toggle__opt" data-theme-set="light" aria-pressed="true" aria-label="Tema claro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg></button>
+            <button class="theme-toggle__opt" data-theme-set="dark" aria-pressed="false" aria-label="Tema escuro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dash-content">
+        <!-- Header -->
+        <section class="anv-header reveal">
+          <div>
+            <h1 class="anv-header__title">Anvisa <span class="anv-header__count tabular">8 em análise · 3 pendências</span></h1>
+            <p class="text-muted" style="font-size: var(--fs-sm); margin: 2px 0 0;">Petições, autorizações e saúde do bot Gov.br · módulo Pro</p>
+          </div>
+          <div class="anv-header__actions">
+            <button class="btn btn--secondary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+              Ver logs
+            </button>
+            <button class="btn btn--primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Renovar sessão
+            </button>
+          </div>
+        </section>
+
+        <!-- Alerta crítico -->
+        <section class="alert alert--attention reveal" role="status">
+          <span class="alert__icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </span>
+          <div class="alert__body">
+            <span class="alert__title">Sessão Gov.br vence em 2 dias</span>
+            <span class="alert__desc">Renove até 04 jun 2026 para evitar interrupção do bot. Sem sessão válida, novos jobs ficam parados em "aguardando reauth".</span>
+          </div>
+          <div class="alert__actions">
+            <button class="btn btn--ghost btn--sm">Adiar</button>
+            <button class="btn btn--primary btn--sm">Renovar agora</button>
+          </div>
+        </section>
+
+        <!-- Mini-stats -->
+        <section class="anv-mini-stats reveal" aria-label="Resumo Anvisa">
+          <article class="anv-mini-stat anv-mini-stat--regulatory">
+            <div class="anv-mini-stat__label">Submetidos no mês</div>
+            <div class="anv-mini-stat__value tabular">11</div>
+            <div class="anv-mini-stat__meta">+3 vs mês anterior</div>
+          </article>
+          <article class="anv-mini-stat anv-mini-stat--regulatory">
+            <div class="anv-mini-stat__label">Em análise</div>
+            <div class="anv-mini-stat__value tabular">8</div>
+            <div class="anv-mini-stat__meta">Tempo médio: 9 dias</div>
+          </article>
+          <article class="anv-mini-stat anv-mini-stat--care">
+            <div class="anv-mini-stat__label">Aprovados no mês</div>
+            <div class="anv-mini-stat__value tabular">9</div>
+            <div class="anv-mini-stat__meta">Taxa de aprovação: 96%</div>
+          </article>
+          <article class="anv-mini-stat anv-mini-stat--attention">
+            <div class="anv-mini-stat__label">Pendência humana</div>
+            <div class="anv-mini-stat__value tabular">2</div>
+            <div class="anv-mini-stat__meta">1 captcha · 1 sem documento</div>
+          </article>
+        </section>
+
+        <!-- Bot status -->
+        <section class="bot-card reveal" aria-label="Estado do bot Anvisa">
+          <span class="bot-card__icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="10" rx="2"/>
+              <circle cx="12" cy="5" r="2"/>
+              <path d="M12 7v4"/>
+              <line x1="8" y1="16" x2="8" y2="16"/>
+              <line x1="16" y1="16" x2="16" y2="16"/>
+            </svg>
+          </span>
+
+          <div class="bot-card__info">
+            <div class="bot-card__title-row">
+              <h2 class="bot-card__title">Bot Anvisa</h2>
+              <span class="badge badge--care"><span class="status-dot status-dot--care"></span>Operacional</span>
+              <span class="text-muted" style="font-size: var(--fs-sm);">Último ciclo há <span class="tabular">12 min</span></span>
+            </div>
+            <div class="bot-card__rows">
+              <div class="bot-card__row">
+                <span class="bot-card__row-label">Sessão Gov.br</span>
+                <span class="bot-card__row-value bot-card__row-value--warning tabular">vence em 2d</span>
+                <span class="bot-card__row-sub">Última renovação: 03 mai</span>
+              </div>
+              <div class="bot-card__row">
+                <span class="bot-card__row-label">Fila pg-boss</span>
+                <span class="bot-card__row-value tabular">0 pendentes</span>
+                <span class="bot-card__row-sub">2 jobs concluídos hoje</span>
+              </div>
+              <div class="bot-card__row">
+                <span class="bot-card__row-label">Taxa de sucesso</span>
+                <span class="bot-card__row-value tabular">96%</span>
+                <span class="bot-card__row-sub">32 / 33 últimos 30d</span>
+              </div>
+              <div class="bot-card__row">
+                <span class="bot-card__row-label">Procuradora</span>
+                <span class="bot-card__row-value">Emília Mendes</span>
+                <span class="bot-card__row-sub tabular">CPF 219.667.402-88</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bot-card__actions">
+            <button class="btn btn--secondary btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M21 8h-5"/></svg>
+              Screenshots
+            </button>
+            <button class="btn btn--primary btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Renovar sessão
+            </button>
+          </div>
+        </section>
+
+        <!-- Toolbar -->
+        <section class="pac-toolbar reveal">
+          <div class="pac-search">
+            <span class="pac-search__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input class="pac-search__input" type="search" placeholder="Buscar por protocolo, paciente, CPF…" />
+          </div>
+
+          <span class="pac-toolbar__divider" aria-hidden="true"></span>
+
+          <button class="pac-filter pac-filter--active">Todos <span class="pac-filter__count">14</span></button>
+          <button class="pac-filter">Em análise <span class="pac-filter__count">8</span></button>
+          <button class="pac-filter">Aprovados <span class="pac-filter__count">3</span></button>
+          <button class="pac-filter">Pendência humana <span class="pac-filter__count">2</span></button>
+          <button class="pac-filter">Rejeitados <span class="pac-filter__count">1</span></button>
+        </section>
+
+        <!-- Lista de protocolos -->
+        <section class="anv-list reveal" aria-label="Protocolos Anvisa">
+          <!-- Needs human (urgente) -->
+          <div class="anv-item anv-item--needs-human">
+            <div class="anv-protocol">
+              <span class="anv-protocol__num">25351.952108/2026-21</span>
+              <span class="anv-protocol__sub">Submetido em 06 jun 2026</span>
+            </div>
+            <div class="anv-patient">
+              <span class="avatar avatar--sm avatar--attention">PS</span>
+              <div class="anv-patient__meta">
+                <span class="anv-patient__name">Pedro Souza Lima</span>
+                <span class="anv-patient__cpf">112.443.667-91</span>
+              </div>
+            </div>
+            <div class="anv-status">
+              <span class="badge badge--attention"><span class="status-dot status-dot--attention status-dot--pulse"></span>Captcha pendente</span>
+              <span class="anv-status__time">Bot parou há 28 min</span>
+            </div>
+            <div class="anv-actions">
+              <button class="anv-actions__btn" aria-label="Ver screenshot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/></svg></button>
+              <button class="btn btn--primary btn--sm">Assumir manual</button>
+            </div>
+          </div>
+
+          <!-- Aprovada hoje -->
+          <div class="anv-item">
+            <div class="anv-protocol">
+              <span class="anv-protocol__num">25351.951482/2026-08</span>
+              <span class="anv-protocol__sub">Submetido em 12 mai 2026 · aprovado em 22 dias</span>
+            </div>
+            <div class="anv-patient">
+              <span class="avatar avatar--sm avatar--regulatory">CH</span>
+              <div class="anv-patient__meta">
+                <span class="anv-patient__name">Carlos Henrique Silva</span>
+                <span class="anv-patient__cpf">442.219.566-31</span>
+              </div>
+            </div>
+            <div class="anv-status">
+              <span class="badge badge--care"><span class="status-dot status-dot--care"></span>Autorizada hoje</span>
+              <span class="anv-status__time">há 2h · PDF gerado</span>
+            </div>
+            <div class="anv-actions">
+              <button class="anv-actions__btn" aria-label="Baixar PDF"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
+              <button class="anv-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+          </div>
+
+          <!-- Em análise (Lucia) -->
+          <div class="anv-item">
+            <div class="anv-protocol">
+              <span class="anv-protocol__num">25351.952014/2026-19</span>
+              <span class="anv-protocol__sub">Submetido em 27 mai 2026 · em análise</span>
+            </div>
+            <div class="anv-patient">
+              <span class="avatar avatar--sm avatar--care">LM</span>
+              <div class="anv-patient__meta">
+                <span class="anv-patient__name">Lucia Mendonça</span>
+                <span class="anv-patient__cpf">298.554.117-89</span>
+              </div>
+            </div>
+            <div class="anv-status">
+              <span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Em análise</span>
+              <span class="anv-status__time">Há 6 dias · normal</span>
+            </div>
+            <div class="anv-actions">
+              <button class="anv-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+          </div>
+
+          <!-- Renovação Maria Fernanda -->
+          <div class="anv-item">
+            <div class="anv-protocol">
+              <span class="anv-protocol__num">25351.948271/2025-43</span>
+              <span class="anv-protocol__sub">Original · vence em 18 dias · renovação pendente</span>
+            </div>
+            <div class="anv-patient">
+              <span class="avatar avatar--sm avatar--attention">MF</span>
+              <div class="anv-patient__meta">
+                <span class="anv-patient__name">Maria Fernanda Costa</span>
+                <span class="anv-patient__cpf">487.123.998-04</span>
+              </div>
+            </div>
+            <div class="anv-status">
+              <span class="badge badge--attention"><span class="status-dot status-dot--attention status-dot--pulse"></span>Vence em 18d</span>
+              <span class="anv-status__time">Iniciar até 04 jun</span>
+            </div>
+            <div class="anv-actions">
+              <button class="btn btn--secondary btn--sm">Iniciar renovação</button>
+            </div>
+          </div>
+
+          <!-- Sem documento (Pendência humana) -->
+          <div class="anv-item anv-item--needs-human">
+            <div class="anv-protocol">
+              <span class="anv-protocol__num">25351.952203/2026-12</span>
+              <span class="anv-protocol__sub">Submissão bloqueada · documento faltando</span>
+            </div>
+            <div class="anv-patient">
+              <span class="avatar avatar--sm avatar--regulatory">AL</span>
+              <div class="anv-patient__meta">
+                <span class="anv-patient__name">Ana Lopes Carvalho</span>
+                <span class="anv-patient__cpf">771.118.554-30</span>
+              </div>
+            </div>
+            <div class="anv-status">
+              <span class="badge badge--attention"><span class="status-dot status-dot--attention status-dot--pulse"></span>Receita ilegível</span>
+              <span class="anv-status__time">Detectado em pre-flight</span>
+            </div>
+            <div class="anv-actions">
+              <button class="anv-actions__btn" aria-label="Ver detalhes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></button>
+              <button class="btn btn--primary btn--sm">Solicitar reenvio</button>
+            </div>
+          </div>
+
+          <!-- Em análise (Tiago) -->
+          <div class="anv-item">
+            <div class="anv-protocol">
+              <span class="anv-protocol__num">25351.951997/2026-04</span>
+              <span class="anv-protocol__sub">Submetido em 22 mai 2026 · em análise</span>
+            </div>
+            <div class="anv-patient">
+              <span class="avatar avatar--sm avatar--attention">TR</span>
+              <div class="anv-patient__meta">
+                <span class="anv-patient__name">Tiago Reis</span>
+                <span class="anv-patient__cpf">115.882.443-66</span>
+              </div>
+            </div>
+            <div class="anv-status">
+              <span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Em análise</span>
+              <span class="anv-status__time">Há 11 dias</span>
+            </div>
+            <div class="anv-actions">
+              <button class="anv-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+          </div>
+
+          <!-- Em análise (Daniela) -->
+          <div class="anv-item">
+            <div class="anv-protocol">
+              <span class="anv-protocol__num">25351.951843/2026-77</span>
+              <span class="anv-protocol__sub">Submetido em 15 mai 2026 · em análise</span>
+            </div>
+            <div class="anv-patient">
+              <span class="avatar avatar--sm avatar--care">DA</span>
+              <div class="anv-patient__meta">
+                <span class="anv-patient__name">Daniela Almeida</span>
+                <span class="anv-patient__cpf">995.443.227-15</span>
+              </div>
+            </div>
+            <div class="anv-status">
+              <span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Em análise</span>
+              <span class="anv-status__time">Há 18 dias</span>
+            </div>
+            <div class="anv-actions">
+              <button class="anv-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const opts = document.querySelectorAll(".theme-toggle__opt");
+    const apply = (mode) => {
+      root.setAttribute("data-theme", mode);
+      opts.forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === mode ? "true" : "false"));
+      try { localStorage.setItem("d10-theme", mode); } catch (_) {}
+    };
+    opts.forEach((b) => b.addEventListener("click", () => apply(b.dataset.themeSet)));
+    try {
+      const saved = localStorage.getItem("d10-theme");
+      if (saved === "light" || saved === "dark") apply(saved);
+    } catch (_) {}
+  </script>
+</body>
+</html>
