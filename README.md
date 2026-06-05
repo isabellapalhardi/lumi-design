@@ -50,8 +50,12 @@ lumi-design/
 | 16 | `pages/medicos.html` | **Fechado** — médicos prescritores · toggle grade ↔ tabela · 4 mini-stats · filtros por status · cards com avatar, CRM, especialidade (ponto colorido), pacientes e prescrições do mês · estados ativo / verificação de CRM / inativo |
 | 17 | `pages/configuracoes.html` | **Fechado** — painel admin da operação · sub-navegação de settings (Geral, Equipe & permissões, Integrações, Faturamento, Segurança, Notificações) · tabela de membros com papel + último acesso + status (ativo / convite pendente) · cards de papéis & permissões por cor |
 | 18 | `pages/relatorios.html` | **Fechado** — analytics da operação · 4 KPIs com variação · receita por mês (barras CSS, mês atual em coral) · funil de conversão regulatório (prescrição → entrega) · mix por categoria (donut conic-gradient) · rankings de prescritores e produtos |
+| 19 | `pages/produto-detalhe.html` | **Fechado** — ficha do produto (CBD Full Spectrum 3000mg) · header com faixa de categoria · ficha técnica · estoque com ponto de reposição + importação Memphis · posologia & indicações · side col com preço/margem, desempenho e movimentação |
+| 20 | `pages/medico-detalhe.html` | **Fechado** — ficha do prescritor (Dr. Carlos Andrade) · dados profissionais + CRM/RQE · pacientes vinculados (linkados) · prescrições recentes · side col com desempenho, áreas de atuação e contato |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
+
+> As listas de Produtos e Médicos linkam para suas telas de detalhe.
 
 ## Como abrir
 

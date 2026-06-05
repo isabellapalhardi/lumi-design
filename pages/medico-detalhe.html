@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dr. Carlos Andrade · lumi</title>
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <style>
+    html { margin: 0; padding: 0; background: var(--brand); }
+    body {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: 0;
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      background: var(--brand);
+      overflow: hidden;
+    }
+    .dash-shell {
+      flex: 1;
+      height: 100%;
+      align-self: stretch;
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px -28px rgba(45, 35, 29, 0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.30), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.20), transparent 65%),
+        rgba(236, 224, 204, 0.88);
+    }
+    [data-theme="dark"] .dash-shell {
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.22), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.16), transparent 65%),
+        rgba(34, 28, 24, 0.96);
+    }
+
+    /* SIDEBAR */
+    .dash-sidebar { padding: var(--space-5) var(--space-4) var(--space-4); display: flex; flex-direction: column; gap: var(--space-6); border-right: 0.5px solid var(--divider); overflow-y: auto; background: transparent; }
+    .dash-brand { padding: 0 var(--space-3); }
+    .dash-brand__wordmark { font-family: var(--font-serif); font-weight: 500; font-size: 34px; letter-spacing: -0.02em; line-height: 1; color: var(--brand); font-optical-sizing: auto; margin: 0; }
+    .dash-nav { display: flex; flex-direction: column; gap: var(--space-5); }
+    .dash-nav__group { display: flex; flex-direction: column; gap: 2px; }
+    .dash-nav__group-title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); padding: 0 var(--space-3); margin-bottom: var(--space-2); }
+    .dash-nav__link { display: flex; align-items: center; gap: var(--space-3); padding: 8px var(--space-3); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--fs-base); font-weight: var(--fw-medium); cursor: pointer; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); text-decoration: none; position: relative; }
+    .dash-nav__link:hover { background: rgba(45, 35, 29, 0.05); color: var(--text); text-decoration: none; }
+    [data-theme="dark"] .dash-nav__link:hover { background: rgba(241, 230, 214, 0.05); }
+    .dash-nav__link[aria-current="page"] { background: var(--brand); color: #FFF7EE; }
+    .dash-nav__link[aria-current="page"]:hover { background: var(--brand-strong); }
+    .dash-nav__icon { width: 18px; height: 18px; flex: none; }
+    .dash-nav__badge { margin-left: auto; font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 1px 6px; border-radius: var(--radius-pill); background: var(--attention-fill); color: var(--attention-base); }
+    .dash-nav__link[aria-current="page"] .dash-nav__badge { background: rgba(255, 247, 238, 0.22); color: #FFF7EE; }
+    .dash-sidebar__footer { margin-top: auto; padding: var(--space-3); display: flex; align-items: center; gap: var(--space-3); border-top: 0.5px solid var(--divider); padding-top: var(--space-4); }
+    .dash-user-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .dash-user-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dash-user-role { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* MAIN */
+    .dash-main { display: flex; flex-direction: column; overflow: hidden; min-width: 0; min-height: 0; }
+    .dash-topbar { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-6); border-bottom: 0.5px solid var(--divider); background: transparent; flex: none; }
+    .dash-topbar__title { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); }
+    .dash-topbar__actions { display: flex; align-items: center; gap: var(--space-3); }
+
+    .dash-content {
+      flex: 1; overflow-y: auto; min-height: 0;
+      padding: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: var(--space-5);
+      align-items: start;
+    }
+    @media (max-width: 1100px) { .dash-content { grid-template-columns: 1fr; } }
+
+    /* HEADER do médico */
+    .order-header {
+      grid-column: 1 / -1;
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      border: 0.5px solid var(--divider);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+    }
+    .order-header__id { display: flex; align-items: center; gap: var(--space-4); flex: 1; min-width: 0; }
+    .order-header__name { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); letter-spacing: -0.015em; color: var(--text); line-height: 1.1; margin: 0; }
+    .order-header__crm { font-size: var(--fs-sm); color: var(--text-muted); font-variant-numeric: tabular-nums; margin-top: 4px; }
+    .order-header__badges { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-3); }
+    .order-header__actions { display: flex; align-items: center; gap: var(--space-2); flex: none; }
+
+    .spec-row__spec { display: inline-flex; align-items: center; gap: 6px; }
+    .spec-dot { width: 8px; height: 8px; border-radius: var(--radius-pill); background: #7E9170; flex: none; }
+
+    /* Painéis */
+    .detail-main { grid-column: 1; display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
+    .detail-side { grid-column: 2; display: flex; flex-direction: column; gap: var(--space-5); }
+    @media (max-width: 1100px) { .detail-main, .detail-side { grid-column: 1; } }
+
+    .panel { background: var(--surface); border-radius: var(--radius-card); border: 0.5px solid var(--divider); box-shadow: var(--shadow-sm); padding: var(--space-5); }
+    .panel__head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-4); }
+    .panel__title { font-size: var(--fs-lg); font-weight: var(--fw-semibold); letter-spacing: -0.01em; margin: 0; }
+    .panel__sub { font-size: var(--fs-sm); color: var(--text-muted); margin: 2px 0 0; }
+    .panel__link { font-size: var(--fs-sm); color: var(--brand); text-decoration: none; font-weight: var(--fw-medium); }
+
+    .spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4) var(--space-5); }
+    .spec-row { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .spec-row__label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+    .spec-row__value { font-size: var(--fs-md); color: var(--text); }
+
+    /* Linhas de pacientes / prescrições */
+    .link-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 0.5px solid var(--divider); cursor: pointer; transition: background var(--duration-fast) var(--ease-out); }
+    .link-row:first-of-type { padding-top: 0; }
+    .link-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .link-row__meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+    .link-row__primary { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--fs-md); letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .link-row__secondary { font-size: var(--fs-sm); color: var(--text-muted); }
+    .link-row__aside { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+    .link-row__date { font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+    /* Side cards */
+    .side-card { background: var(--surface); border-radius: var(--radius-card); border: 0.5px solid var(--divider); box-shadow: var(--shadow-sm); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+    .side-card__title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding-bottom: var(--space-3); border-bottom: 0.5px solid var(--divider); }
+    .side-line { display: flex; justify-content: space-between; font-size: var(--fs-sm); align-items: baseline; }
+    .side-line__label { color: var(--text-muted); }
+    .side-line__value { font-variant-numeric: tabular-nums; font-weight: var(--fw-medium); color: var(--text); }
+    .side-line--total { padding-top: var(--space-3); border-top: 0.5px solid var(--divider); margin-top: var(--space-2); }
+    .side-line--total .side-line__label { color: var(--text); font-weight: var(--fw-medium); }
+    .side-line--total .side-line__value { font-size: var(--fs-lg); font-weight: var(--fw-semibold); }
+
+    .pill-row { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+    .tag { display: inline-flex; align-items: center; padding: 4px 11px; border-radius: var(--radius-pill); background: var(--sidebar); color: var(--text); font-size: var(--fs-sm); font-weight: var(--fw-medium); }
+    .contact-row { display: flex; align-items: center; gap: 8px; font-size: var(--fs-sm); color: var(--text-muted); }
+    .contact-row svg { color: var(--text-faint); flex: none; }
+
+    @media (max-width: 960px) { .dash-shell { grid-template-columns: 1fr; } .dash-sidebar { display: none; } }
+    @media (max-width: 640px) { .spec-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="dash-shell">
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar">
+      <div class="dash-brand"><h1 class="dash-brand__wordmark">lumi</h1></div>
+      <nav class="dash-nav" aria-label="Navegação principal">
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Operação</span>
+          <a class="dash-nav__link" href="dashboard.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>Início</a>
+          <a class="dash-nav__link" href="pacientes.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pacientes<span class="dash-nav__badge">47</span></a>
+          <a class="dash-nav__link" href="medicos.html" aria-current="page"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2a2 2 0 0 0-2 2v5a6 6 0 0 0 12 0V4a2 2 0 0 0-2-2"/><path d="M6 3v4a6 6 0 0 0 6 6"/><circle cx="20" cy="10" r="2"/></svg>Médicos</a>
+          <a class="dash-nav__link" href="pedidos.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>Pedidos<span class="dash-nav__badge">12</span></a>
+          <a class="dash-nav__link" href="produtos.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Produtos</a>
+          <a class="dash-nav__link" href="financeiro.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Financeiro<span class="dash-nav__badge">5</span></a>
+          <a class="dash-nav__link" href="relatorios.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Relatórios</a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Regulatório</span>
+          <a class="dash-nav__link" href="anvisa.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Anvisa<span class="dash-nav__badge">3</span></a>
+          <a class="dash-nav__link" href="logistica.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Logística<span class="dash-nav__badge">4</span></a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Sistema</span>
+          <a class="dash-nav__link" href="configuracoes.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</a>
+        </div>
+      </nav>
+      <div class="dash-sidebar__footer">
+        <span class="avatar avatar--care">EM</span>
+        <div class="dash-user-meta">
+          <span class="dash-user-name">Emília Mendes</span>
+          <span class="dash-user-role">Admin · Setty</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="dash-main">
+      <header class="dash-topbar">
+        <div class="inline" style="gap: var(--space-3); font-size: var(--fs-sm);">
+          <a href="dashboard.html" style="color: var(--text-muted); text-decoration: none;">Início</a>
+          <span style="color: var(--text-faint);">/</span>
+          <a href="medicos.html" style="color: var(--text-muted); text-decoration: none;">Médicos</a>
+          <span style="color: var(--text-faint);">/</span>
+          <span class="dash-topbar__title">Dr. Carlos Andrade</span>
+        </div>
+        <div class="dash-topbar__actions">
+          <button class="icon-btn" aria-label="Notificações" style="position: relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="status-dot status-dot--attention" style="position: absolute; top: 7px; right: 7px; width: 7px; height: 7px;"></span></button>
+          <div class="theme-toggle" role="group" aria-label="Tema">
+            <button class="theme-toggle__opt" data-theme-set="light" aria-pressed="true" aria-label="Tema claro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg></button>
+            <button class="theme-toggle__opt" data-theme-set="dark" aria-pressed="false" aria-label="Tema escuro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dash-content">
+        <!-- HEADER do médico -->
+        <section class="order-header reveal">
+          <div class="order-header__id">
+            <span class="avatar avatar--xl avatar--care">CA</span>
+            <div>
+              <h1 class="order-header__name">Dr. Carlos Andrade</h1>
+              <div class="order-header__crm">CRM 132445/SP · RQE 18234</div>
+              <div class="order-header__badges">
+                <span class="badge badge--care"><span class="status-dot status-dot--care"></span>Ativo</span>
+                <span class="badge"><span class="spec-dot" style="background:#7E9170;"></span>Neurologia</span>
+                <span class="badge"><span class="status-dot"></span>★ top prescritor</span>
+              </div>
+            </div>
+          </div>
+          <div class="order-header__actions">
+            <button class="btn btn--secondary">Mensagem</button>
+            <button class="btn btn--secondary">Editar</button>
+          </div>
+        </section>
+
+        <!-- COLUNA PRINCIPAL -->
+        <div class="detail-main">
+          <!-- Dados profissionais -->
+          <section class="panel reveal">
+            <div class="panel__head">
+              <div>
+                <h2 class="panel__title">Dados profissionais</h2>
+                <p class="panel__sub">Registro e vínculo com a plataforma.</p>
+              </div>
+            </div>
+            <div class="spec-grid">
+              <div class="spec-row"><span class="spec-row__label">CRM</span><span class="spec-row__value">132445/SP</span></div>
+              <div class="spec-row"><span class="spec-row__label">RQE</span><span class="spec-row__value">18234 · Neurologia</span></div>
+              <div class="spec-row"><span class="spec-row__label">Especialidade</span><span class="spec-row__value"><span class="spec-row__spec"><span class="spec-dot"></span>Neurologia</span></span></div>
+              <div class="spec-row"><span class="spec-row__label">Parceiro desde</span><span class="spec-row__value">mar 2024 · há 2 anos</span></div>
+              <div class="spec-row"><span class="spec-row__label">Cidade · UF</span><span class="spec-row__value">São Paulo · SP</span></div>
+              <div class="spec-row"><span class="spec-row__label">Verificação CRM</span><span class="spec-row__value">Validado no CFM · 12 mar 2024</span></div>
+            </div>
+          </section>
+
+          <!-- Pacientes vinculados -->
+          <section class="panel reveal">
+            <div class="panel__head">
+              <div>
+                <h2 class="panel__title">Pacientes vinculados</h2>
+                <p class="panel__sub">18 pacientes ativos sob acompanhamento.</p>
+              </div>
+              <a class="panel__link" href="pacientes.html">Ver todos →</a>
+            </div>
+            <div class="link-row" onclick="location.href='paciente-detalhe.html'">
+              <span class="avatar avatar--sm avatar--attention">MF</span>
+              <div class="link-row__meta"><span class="link-row__primary">Maria Fernanda Costa</span><span class="link-row__secondary">#PED2934118 · CBD Full Spectrum 3000mg</span></div>
+              <div class="link-row__aside"><span class="badge badge--attention"><span class="status-dot status-dot--attention"></span>Fiscalização Anvisa</span></div>
+            </div>
+            <div class="link-row" onclick="location.href='paciente-detalhe.html'">
+              <span class="avatar avatar--sm avatar--care">LM</span>
+              <div class="link-row__meta"><span class="link-row__primary">Lucia Mendonça</span><span class="link-row__secondary">#PED2938221 · CBD Full Spectrum 1500mg</span></div>
+              <div class="link-row__aside"><span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Em trânsito</span></div>
+            </div>
+            <div class="link-row" onclick="location.href='paciente-detalhe.html'">
+              <span class="avatar avatar--sm avatar--regulatory">JA</span>
+              <div class="link-row__meta"><span class="link-row__primary">João Pedro Almeida</span><span class="link-row__secondary">#PED2939120 · CBD/THC 1:1 600mg</span></div>
+              <div class="link-row__aside"><span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Em trânsito</span></div>
+            </div>
+            <div class="link-row" onclick="location.href='paciente-detalhe.html'">
+              <span class="avatar avatar--sm avatar--attention">RC</span>
+              <div class="link-row__meta"><span class="link-row__primary">Rafael Castro</span><span class="link-row__secondary">#PED2941133 · CBD Isolado 1000mg</span></div>
+              <div class="link-row__aside"><span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Embalado</span></div>
+            </div>
+            <div class="link-row" onclick="location.href='paciente-detalhe.html'">
+              <span class="avatar avatar--sm avatar--care">BS</span>
+              <div class="link-row__meta"><span class="link-row__primary">Beatriz Souza</span><span class="link-row__secondary">#PED2918734 · CBD Full Spectrum 3000mg</span></div>
+              <div class="link-row__aside"><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Entregue</span></div>
+            </div>
+          </section>
+
+          <!-- Prescrições recentes -->
+          <section class="panel reveal">
+            <div class="panel__head">
+              <div>
+                <h2 class="panel__title">Prescrições recentes</h2>
+                <p class="panel__sub">24 prescrições neste mês.</p>
+              </div>
+            </div>
+            <div class="link-row" onclick="location.href='pedido-detalhe.html'">
+              <div class="link-row__meta"><span class="link-row__primary">Maria Fernanda Costa</span><span class="link-row__secondary">CBD Full Spectrum 3000mg · 2 gotas, 2× ao dia · 6 meses</span></div>
+              <div class="link-row__aside"><span class="link-row__date">28 mai 2026</span></div>
+            </div>
+            <div class="link-row" onclick="location.href='pedido-detalhe.html'">
+              <div class="link-row__meta"><span class="link-row__primary">Lucia Mendonça</span><span class="link-row__secondary">CBD Full Spectrum 1500mg · 3 gotas, 1× ao dia · 3 meses</span></div>
+              <div class="link-row__aside"><span class="link-row__date">22 mai 2026</span></div>
+            </div>
+            <div class="link-row" onclick="location.href='pedido-detalhe.html'">
+              <div class="link-row__meta"><span class="link-row__primary">João Pedro Almeida</span><span class="link-row__secondary">CBD/THC 1:1 600mg · 1 gota, 2× ao dia · 6 meses</span></div>
+              <div class="link-row__aside"><span class="link-row__date">15 mai 2026</span></div>
+            </div>
+            <div class="link-row" onclick="location.href='pedido-detalhe.html'">
+              <div class="link-row__meta"><span class="link-row__primary">Rafael Castro</span><span class="link-row__secondary">CBD Isolado 1000mg · 4 gotas, 2× ao dia · 3 meses</span></div>
+              <div class="link-row__aside"><span class="link-row__date">09 mai 2026</span></div>
+            </div>
+          </section>
+        </div>
+
+        <!-- COLUNA LATERAL -->
+        <div class="detail-side">
+          <!-- No mês -->
+          <section class="side-card reveal">
+            <span class="side-card__title">Desempenho no mês</span>
+            <div class="side-line"><span class="side-line__label">Prescrições</span><span class="side-line__value">24</span></div>
+            <div class="side-line"><span class="side-line__label">Pacientes ativos</span><span class="side-line__value">18</span></div>
+            <div class="side-line"><span class="side-line__label">Novos no mês</span><span class="side-line__value">3</span></div>
+            <div class="side-line side-line--total"><span class="side-line__label">Ranking</span><span class="side-line__value">#2 prescritor</span></div>
+          </section>
+
+          <!-- Áreas -->
+          <section class="side-card reveal">
+            <span class="side-card__title">Áreas de atuação</span>
+            <div class="pill-row">
+              <span class="tag">Dor neuropática</span>
+              <span class="tag">Epilepsia refratária</span>
+              <span class="tag">Enxaqueca crônica</span>
+              <span class="tag">Parkinson</span>
+            </div>
+          </section>
+
+          <!-- Contato -->
+          <section class="side-card reveal">
+            <span class="side-card__title">Contato</span>
+            <div class="contact-row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>carlos.andrade@neuroclinica.com.br</div>
+            <div class="contact-row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="tabular">(11) 9 8123-4567</span></div>
+            <div class="contact-row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Neuroclínica · São Paulo, SP</div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const opts = document.querySelectorAll(".theme-toggle__opt");
+    const apply = (mode) => {
+      root.setAttribute("data-theme", mode);
+      opts.forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === mode ? "true" : "false"));
+      try { localStorage.setItem("lumi-theme", mode); } catch (_) {}
+    };
+    opts.forEach((b) => b.addEventListener("click", () => apply(b.dataset.themeSet)));
+    try {
+      const saved = localStorage.getItem("lumi-theme");
+      if (saved === "light" || saved === "dark") apply(saved);
+    } catch (_) {}
+  </script>
+</body>
+</html>
