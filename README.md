@@ -54,10 +54,11 @@ lumi-design/
 | 20 | `pages/medico-detalhe.html` | **Fechado** — ficha do prescritor (Dr. Carlos Andrade) · dados profissionais + CRM/RQE · pacientes vinculados (linkados) · prescrições recentes · side col com desempenho, áreas de atuação e contato |
 | 21 | `pages/integracoes.html` | **Fechado** — Configurações › Integrações · cards de conexão (Memphis, Global Pace, Gov.br/Anvisa, WhatsApp + Memed/NF-e disponíveis) com status, sincronização e switch · alerta de sessão Gov.br · bloco de chaves de API & webhooks com entregas recentes |
 | 22 | `pages/faturamento.html` | **Fechado** — Configurações › Faturamento · plano lumi Scale (card coral) · medidores de uso no ciclo · método de pagamento · histórico de faturas (pago / em aberto) |
+| 23 | `pages/super-admin.html` | **Fechado** — visão nível-plataforma (super admin lumi) · sidebar e identidade próprias · KPIs da rede (operadores, MRR, pedidos, bots) · tabela de operadores/tenants com plano, pacientes, pedidos, MRR, saúde do bot Anvisa e status (ativo / onboarding / suspenso) |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 
-> As listas de Produtos e Médicos linkam para suas telas de detalhe.
+> As listas de Produtos e Médicos linkam para suas telas de detalhe. O item "Atendimento" foi removido da navegação (não haverá essa tela).
 
 ## Como abrir
 
