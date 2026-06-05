@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Configurações · lumi</title>
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <style>
+    html { margin: 0; padding: 0; background: var(--brand); }
+    body {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: 0;
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      background: var(--brand);
+      overflow: hidden;
+    }
+
+    .dash-shell {
+      flex: 1;
+      height: 100%;
+      align-self: stretch;
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px -28px rgba(45, 35, 29, 0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.30), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.20), transparent 65%),
+        rgba(236, 224, 204, 0.88);
+    }
+    [data-theme="dark"] .dash-shell {
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.22), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.16), transparent 65%),
+        rgba(34, 28, 24, 0.96);
+    }
+
+    /* SIDEBAR */
+    .dash-sidebar { padding: var(--space-5) var(--space-4) var(--space-4); display: flex; flex-direction: column; gap: var(--space-6); border-right: 0.5px solid var(--divider); overflow-y: auto; background: transparent; }
+    .dash-brand { padding: 0 var(--space-3); }
+    .dash-brand__wordmark { font-family: var(--font-serif); font-weight: 500; font-size: 34px; letter-spacing: -0.02em; line-height: 1; color: var(--brand); font-optical-sizing: auto; margin: 0; }
+    .dash-nav { display: flex; flex-direction: column; gap: var(--space-5); }
+    .dash-nav__group { display: flex; flex-direction: column; gap: 2px; }
+    .dash-nav__group-title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); padding: 0 var(--space-3); margin-bottom: var(--space-2); }
+    .dash-nav__link { display: flex; align-items: center; gap: var(--space-3); padding: 8px var(--space-3); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--fs-base); font-weight: var(--fw-medium); cursor: pointer; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); text-decoration: none; position: relative; }
+    .dash-nav__link:hover { background: rgba(45, 35, 29, 0.05); color: var(--text); text-decoration: none; }
+    [data-theme="dark"] .dash-nav__link:hover { background: rgba(241, 230, 214, 0.05); }
+    .dash-nav__link[aria-current="page"] { background: var(--brand); color: #FFF7EE; }
+    .dash-nav__link[aria-current="page"]:hover { background: var(--brand-strong); }
+    .dash-nav__icon { width: 18px; height: 18px; flex: none; }
+    .dash-nav__badge { margin-left: auto; font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 1px 6px; border-radius: var(--radius-pill); background: var(--attention-fill); color: var(--attention-base); }
+    .dash-nav__link[aria-current="page"] .dash-nav__badge { background: rgba(255, 247, 238, 0.22); color: #FFF7EE; }
+    .dash-sidebar__footer { margin-top: auto; padding: var(--space-3); display: flex; align-items: center; gap: var(--space-3); border-top: 0.5px solid var(--divider); padding-top: var(--space-4); }
+    .dash-user-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .dash-user-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dash-user-role { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* MAIN */
+    .dash-main { display: flex; flex-direction: column; overflow: hidden; min-width: 0; min-height: 0; }
+    .dash-topbar { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-6); border-bottom: 0.5px solid var(--divider); background: transparent; flex: none; }
+    .dash-topbar__title { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); }
+    .dash-topbar__actions { display: flex; align-items: center; gap: var(--space-3); }
+    .dash-content { flex: 1; overflow-y: auto; min-height: 0; padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-5); }
+
+    /* Page header */
+    .ord-header { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+    .ord-header__title { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); letter-spacing: -0.015em; line-height: 1.1; margin: 0; }
+
+    /* Layout settings: sub-nav + seção */
+    .set-layout { display: grid; grid-template-columns: 220px 1fr; gap: var(--space-6); align-items: start; }
+    .set-nav { display: flex; flex-direction: column; gap: 2px; position: sticky; top: 0; }
+    .set-nav__group-title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); padding: 0 var(--space-3); margin-bottom: var(--space-2); }
+    .set-nav__item { display: flex; align-items: center; gap: var(--space-3); padding: 8px var(--space-3); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--fs-base); font-weight: var(--fw-medium); cursor: pointer; text-decoration: none; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+    .set-nav__item:hover { background: rgba(45, 35, 29, 0.05); color: var(--text); }
+    [data-theme="dark"] .set-nav__item:hover { background: rgba(241, 230, 214, 0.05); }
+    .set-nav__item[aria-current="true"] { background: var(--sidebar); color: var(--text); font-weight: var(--fw-semibold); }
+    .set-nav__icon { width: 17px; height: 17px; flex: none; }
+    .set-nav__badge { margin-left: auto; font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 1px 6px; border-radius: var(--radius-pill); background: var(--attention-fill); color: var(--attention-base); font-variant-numeric: tabular-nums; }
+
+    .set-section { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+    .set-block { background: var(--surface); border: 0.5px solid var(--divider); border-radius: var(--radius-card); box-shadow: var(--shadow-sm); overflow: hidden; }
+    .set-block__head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); padding: var(--space-5) var(--space-5) var(--space-4); flex-wrap: wrap; }
+    .set-block__title { font-size: var(--fs-lg); font-weight: var(--fw-semibold); color: var(--text); letter-spacing: -0.01em; margin: 0; }
+    .set-block__desc { font-size: var(--fs-sm); color: var(--text-muted); margin: 3px 0 0; }
+
+    /* Tabela de membros */
+    .set-table { width: 100%; border-collapse: collapse; font-size: var(--fs-base); border-top: 0.5px solid var(--divider); }
+    .set-table thead th { text-align: left; font-weight: var(--fw-semibold); letter-spacing: 0.06em; text-transform: uppercase; font-size: var(--fs-sm); color: var(--text-muted); padding: var(--space-3) var(--space-5); border-bottom: 0.5px solid var(--divider); white-space: nowrap; }
+    .set-table tbody td { padding: var(--space-3) var(--space-5); border-bottom: 0.5px solid var(--divider); vertical-align: middle; }
+    .set-table tbody tr:last-child td { border-bottom: 0; }
+    .set-table tbody tr { transition: background var(--duration-fast) var(--ease-out); }
+    .set-table tbody tr:hover { background: rgba(45, 35, 29, 0.03); }
+    [data-theme="dark"] .set-table tbody tr:hover { background: rgba(241, 230, 214, 0.04); }
+    .set-table .col-actions { width: 56px; text-align: right; }
+    .set-table .tabular { font-variant-numeric: tabular-nums; }
+
+    .mem-name { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+    .mem-name__meta { display: flex; flex-direction: column; min-width: 0; }
+    .mem-name__primary { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--fs-md); letter-spacing: -0.005em; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .mem-name__you { font-size: 10px; font-weight: var(--fw-semibold); letter-spacing: 0.04em; text-transform: uppercase; color: var(--brand); background: rgba(196, 104, 80, 0.12); padding: 1px 6px; border-radius: var(--radius-pill); }
+    .mem-name__secondary { font-size: var(--fs-sm); color: var(--text-muted); margin-top: 1px; }
+
+    .role-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 11px; border-radius: var(--radius-pill); background: var(--sidebar); color: var(--text); font-size: var(--fs-sm); font-weight: var(--fw-medium); white-space: nowrap; }
+    .role-pill__dot { width: 7px; height: 7px; border-radius: var(--radius-pill); background: var(--role-color, var(--text-faint)); flex: none; }
+    .role--admin { --role-color: #C46850; }
+    .role--atendimento { --role-color: #5C97A8; }
+    .role--financeiro { --role-color: #7E9170; }
+    .role--farmaceutico { --role-color: #8A7BB8; }
+    .role--logistica { --role-color: #C99853; }
+
+    .set-actions__btn { width: 30px; height: 30px; border-radius: var(--radius-pill); background: transparent; color: var(--text-muted); border: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+    .set-actions__btn:hover { background: var(--divider); color: var(--text); }
+
+    /* Cards de papéis */
+    .role-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--space-3); padding: 0 var(--space-5) var(--space-5); }
+    .role-card { border: 0.5px solid var(--divider); border-radius: var(--radius-card); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); background: var(--surface); }
+    .role-card__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+    .role-card__count { font-size: var(--fs-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .role-card__caps { font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.5; }
+
+    @media (max-width: 1040px) { .set-layout { grid-template-columns: 1fr; } .set-nav { flex-direction: row; flex-wrap: wrap; position: static; } .set-nav__group-title { width: 100%; } }
+    @media (max-width: 960px) { .dash-shell { grid-template-columns: 1fr; } .dash-sidebar { display: none; } }
+    @media (max-width: 720px) { .set-col-access { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="dash-shell">
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar">
+      <div class="dash-brand"><h1 class="dash-brand__wordmark">lumi</h1></div>
+      <nav class="dash-nav" aria-label="Navegação principal">
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Operação</span>
+          <a class="dash-nav__link" href="dashboard.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>Início</a>
+          <a class="dash-nav__link" href="pacientes.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pacientes<span class="dash-nav__badge">47</span></a>
+          <a class="dash-nav__link" href="medicos.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2a2 2 0 0 0-2 2v5a6 6 0 0 0 12 0V4a2 2 0 0 0-2-2"/><path d="M6 3v4a6 6 0 0 0 6 6"/><circle cx="20" cy="10" r="2"/></svg>Médicos</a>
+          <a class="dash-nav__link" href="pedidos.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>Pedidos<span class="dash-nav__badge">12</span></a>
+          <a class="dash-nav__link" href="produtos.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Produtos</a>
+          <a class="dash-nav__link" href="financeiro.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Financeiro<span class="dash-nav__badge">5</span></a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Relatórios</a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Regulatório</span>
+          <a class="dash-nav__link" href="anvisa.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Anvisa<span class="dash-nav__badge">3</span></a>
+          <a class="dash-nav__link" href="logistica.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Logística<span class="dash-nav__badge">4</span></a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Sistema</span>
+          <a class="dash-nav__link" href="configuracoes.html" aria-current="page"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</a>
+        </div>
+      </nav>
+      <div class="dash-sidebar__footer">
+        <span class="avatar avatar--care">EM</span>
+        <div class="dash-user-meta">
+          <span class="dash-user-name">Emília Mendes</span>
+          <span class="dash-user-role">Admin · Setty</span>
+        </div>
+        <button class="set-actions__btn" aria-label="Sair"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="dash-main">
+      <header class="dash-topbar">
+        <div class="inline" style="gap: var(--space-3); font-size: var(--fs-sm);">
+          <a href="dashboard.html" style="color: var(--text-muted); text-decoration: none;">Início</a>
+          <span style="color: var(--text-faint);">/</span>
+          <span class="dash-topbar__title">Configurações</span>
+        </div>
+        <div class="dash-topbar__actions">
+          <button class="icon-btn" aria-label="Notificações" style="position: relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="status-dot status-dot--attention" style="position: absolute; top: 7px; right: 7px; width: 7px; height: 7px;"></span></button>
+          <div class="theme-toggle" role="group" aria-label="Tema">
+            <button class="theme-toggle__opt" data-theme-set="light" aria-pressed="true" aria-label="Tema claro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg></button>
+            <button class="theme-toggle__opt" data-theme-set="dark" aria-pressed="false" aria-label="Tema escuro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dash-content">
+        <!-- Header da página -->
+        <section class="ord-header reveal">
+          <div>
+            <h1 class="ord-header__title">Configurações</h1>
+            <p class="text-muted" style="font-size: var(--fs-sm); margin: 2px 0 0;">Organização <strong style="color: var(--text); font-weight: var(--fw-semibold);">Setty</strong> · gestão da equipe, permissões e integrações da operação.</p>
+          </div>
+        </section>
+
+        <div class="set-layout reveal">
+          <!-- Sub-navegação -->
+          <nav class="set-nav" aria-label="Seções de configuração">
+            <span class="set-nav__group-title">Organização</span>
+            <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>Geral</a>
+            <a class="set-nav__item" href="#" aria-current="true"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Equipe &amp; permissões</a>
+            <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Integrações<span class="set-nav__badge">3</span></a>
+            <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Faturamento</a>
+            <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Segurança &amp; auditoria</a>
+            <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notificações</a>
+          </nav>
+
+          <!-- Seção ativa: Equipe & permissões -->
+          <div class="set-section">
+            <!-- Membros -->
+            <div class="set-block">
+              <div class="set-block__head">
+                <div>
+                  <h2 class="set-block__title">Membros da equipe</h2>
+                  <p class="set-block__desc">6 membros · 5 ativos · 1 convite pendente</p>
+                </div>
+                <button class="btn btn--primary">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Convidar membro
+                </button>
+              </div>
+              <table class="set-table">
+                <thead>
+                  <tr>
+                    <th>Membro</th>
+                    <th>Papel</th>
+                    <th class="set-col-access">Último acesso</th>
+                    <th>Status</th>
+                    <th class="col-actions">Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="mem-name"><span class="avatar avatar--care">EM</span><div class="mem-name__meta"><span class="mem-name__primary">Emília Mendes <span class="mem-name__you">Você</span></span><span class="mem-name__secondary">emilia@setty.com.br</span></div></div></td>
+                    <td><span class="role-pill role--admin"><span class="role-pill__dot"></span>Admin</span></td>
+                    <td class="set-col-access tabular">agora</td>
+                    <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Ativo</span></td>
+                    <td class="col-actions"><button class="set-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+                  </tr>
+                  <tr>
+                    <td><div class="mem-name"><span class="avatar avatar--regulatory">RA</span><div class="mem-name__meta"><span class="mem-name__primary">Ricardo Alves</span><span class="mem-name__secondary">ricardo@setty.com.br</span></div></div></td>
+                    <td><span class="role-pill role--atendimento"><span class="role-pill__dot"></span>Atendimento</span></td>
+                    <td class="set-col-access tabular">há 2 h</td>
+                    <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Ativo</span></td>
+                    <td class="col-actions"><button class="set-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+                  </tr>
+                  <tr>
+                    <td><div class="mem-name"><span class="avatar avatar--care">FD</span><div class="mem-name__meta"><span class="mem-name__primary">Fernanda Dias</span><span class="mem-name__secondary">fernanda@setty.com.br</span></div></div></td>
+                    <td><span class="role-pill role--financeiro"><span class="role-pill__dot"></span>Financeiro</span></td>
+                    <td class="set-col-access tabular">ontem</td>
+                    <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Ativo</span></td>
+                    <td class="col-actions"><button class="set-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+                  </tr>
+                  <tr>
+                    <td><div class="mem-name"><span class="avatar avatar--attention">PB</span><div class="mem-name__meta"><span class="mem-name__primary">Dra. Paula Brandão</span><span class="mem-name__secondary">paula@setty.com.br</span></div></div></td>
+                    <td><span class="role-pill role--farmaceutico"><span class="role-pill__dot"></span>Farmacêutica · RT</span></td>
+                    <td class="set-col-access tabular">há 3 h</td>
+                    <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Ativo</span></td>
+                    <td class="col-actions"><button class="set-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+                  </tr>
+                  <tr>
+                    <td><div class="mem-name"><span class="avatar avatar--regulatory">TM</span><div class="mem-name__meta"><span class="mem-name__primary">Tiago Mendonça</span><span class="mem-name__secondary">tiago@setty.com.br</span></div></div></td>
+                    <td><span class="role-pill role--logistica"><span class="role-pill__dot"></span>Logística</span></td>
+                    <td class="set-col-access tabular">há 1 dia</td>
+                    <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Ativo</span></td>
+                    <td class="col-actions"><button class="set-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+                  </tr>
+                  <tr>
+                    <td><div class="mem-name"><span class="avatar" style="background: var(--divider); color: var(--text-faint);">JR</span><div class="mem-name__meta"><span class="mem-name__primary">Juliana Reis</span><span class="mem-name__secondary">juliana@setty.com.br</span></div></div></td>
+                    <td><span class="role-pill role--atendimento"><span class="role-pill__dot"></span>Atendimento</span></td>
+                    <td class="set-col-access" style="color: var(--text-faint);">—</td>
+                    <td><span class="badge badge--attention"><span class="status-dot status-dot--attention status-dot--pulse"></span>Convite pendente</span></td>
+                    <td class="col-actions"><button class="set-actions__btn" aria-label="Mais"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Papéis -->
+            <div class="set-block">
+              <div class="set-block__head">
+                <div>
+                  <h2 class="set-block__title">Papéis &amp; permissões</h2>
+                  <p class="set-block__desc">O que cada papel pode acessar na plataforma.</p>
+                </div>
+                <button class="btn btn--secondary">Gerenciar papéis</button>
+              </div>
+              <div class="role-grid">
+                <article class="role-card">
+                  <div class="role-card__top">
+                    <span class="role-pill role--admin"><span class="role-pill__dot"></span>Admin</span>
+                    <span class="role-card__count">1 membro</span>
+                  </div>
+                  <p class="role-card__caps">Acesso total · gestão da equipe, integrações, faturamento e todas as operações.</p>
+                </article>
+                <article class="role-card">
+                  <div class="role-card__top">
+                    <span class="role-pill role--atendimento"><span class="role-pill__dot"></span>Atendimento</span>
+                    <span class="role-card__count">2 membros</span>
+                  </div>
+                  <p class="role-card__caps">Pacientes, pedidos e acompanhamento Anvisa. Sem acesso a financeiro nem configurações.</p>
+                </article>
+                <article class="role-card">
+                  <div class="role-card__top">
+                    <span class="role-pill role--financeiro"><span class="role-pill__dot"></span>Financeiro</span>
+                    <span class="role-card__count">1 membro</span>
+                  </div>
+                  <p class="role-card__caps">Cobranças, pagamentos e relatórios. Conciliação Global Pace.</p>
+                </article>
+                <article class="role-card">
+                  <div class="role-card__top">
+                    <span class="role-pill role--farmaceutico"><span class="role-pill__dot"></span>Farmacêutica · RT</span>
+                    <span class="role-card__count">1 membro</span>
+                  </div>
+                  <p class="role-card__caps">Prescrições, produtos e farmacovigilância. Responsável técnica perante a Anvisa.</p>
+                </article>
+                <article class="role-card">
+                  <div class="role-card__top">
+                    <span class="role-pill role--logistica"><span class="role-pill__dot"></span>Logística</span>
+                    <span class="role-card__count">1 membro</span>
+                  </div>
+                  <p class="role-card__caps">Pedidos e envios. Rastreio Memphis e baixa de entregas.</p>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const opts = document.querySelectorAll(".theme-toggle__opt");
+    const apply = (mode) => {
+      root.setAttribute("data-theme", mode);
+      opts.forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === mode ? "true" : "false"));
+      try { localStorage.setItem("lumi-theme", mode); } catch (_) {}
+    };
+    opts.forEach((b) => b.addEventListener("click", () => apply(b.dataset.themeSet)));
+    try {
+      const saved = localStorage.getItem("lumi-theme");
+      if (saved === "light" || saved === "dark") apply(saved);
+    } catch (_) {}
+
+    // Sub-nav: troca de seção (visual apenas neste mockup)
+    const setItems = document.querySelectorAll(".set-nav__item");
+    setItems.forEach((it) => it.addEventListener("click", (e) => {
+      e.preventDefault();
+      setItems.forEach((x) => x.removeAttribute("aria-current"));
+      it.setAttribute("aria-current", "true");
+    }));
+  </script>
+</body>
+</html>
