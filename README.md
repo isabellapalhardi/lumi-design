@@ -49,6 +49,7 @@ lumi-design/
 | 15 | `pages/produtos.html` | **Fechado** — catálogo dos produtos de cannabis importados do Paraguai · toggle grade ↔ tabela · 4 mini-stats · filtros por categoria · cards focados no texto com categoria por faixa de cor lateral, preço, badge de estoque (ok / baixo / esgotado / importação a caminho) e prescrições no mês |
 | 16 | `pages/medicos.html` | **Fechado** — médicos prescritores · toggle grade ↔ tabela · 4 mini-stats · filtros por status · cards com avatar, CRM, especialidade (ponto colorido), pacientes e prescrições do mês · estados ativo / verificação de CRM / inativo |
 | 17 | `pages/configuracoes.html` | **Fechado** — painel admin da operação · sub-navegação de settings (Geral, Equipe & permissões, Integrações, Faturamento, Segurança, Notificações) · tabela de membros com papel + último acesso + status (ativo / convite pendente) · cards de papéis & permissões por cor |
+| 18 | `pages/relatorios.html` | **Fechado** — analytics da operação · 4 KPIs com variação · receita por mês (barras CSS, mês atual em coral) · funil de conversão regulatório (prescrição → entrega) · mix por categoria (donut conic-gradient) · rankings de prescritores e produtos |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 
