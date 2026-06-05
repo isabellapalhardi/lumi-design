@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Integrações · lumi</title>
+  <title>Faturamento · lumi</title>
   <link rel="stylesheet" href="../styles/tokens.css" />
   <link rel="stylesheet" href="../styles/components.css" />
   <style>
@@ -90,52 +90,53 @@
     .set-block__title { font-size: var(--fs-lg); font-weight: var(--fw-semibold); color: var(--text); letter-spacing: -0.01em; margin: 0; }
     .set-block__desc { font-size: var(--fs-sm); color: var(--text-muted); margin: 3px 0 0; }
 
-    /* Alerta de atenção */
-    .intg-alert { display: flex; gap: var(--space-3); padding: var(--space-4) var(--space-5); border-radius: var(--radius-card); background: var(--attention-fill); align-items: center; }
-    .intg-alert__body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
-    .intg-alert__title { font-weight: var(--fw-semibold); font-size: var(--fs-md); }
-    .intg-alert__desc { font-size: var(--fs-sm); color: var(--text-muted); }
+    /* Plano atual */
+    .plan-card { background:
+        linear-gradient(135deg, rgba(196, 104, 80, 0.14) 0%, rgba(196, 104, 80, 0) 55%),
+        var(--surface);
+      border: 0.5px solid var(--divider); border-radius: var(--radius-card); box-shadow: var(--shadow-sm); padding: var(--space-5); display: flex; align-items: center; gap: var(--space-5); flex-wrap: wrap; }
+    .plan-card__body { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 8px; }
+    .plan-card__name { display: inline-flex; align-items: center; gap: var(--space-2); }
+    .plan-card__tier { font-size: var(--fs-xl); font-weight: var(--fw-semibold); color: var(--text); letter-spacing: -0.01em; }
+    .plan-card__pill { font-size: 10px; font-weight: var(--fw-semibold); letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: var(--radius-pill); background: var(--brand); color: #FFF7EE; }
+    .plan-card__meta { font-size: var(--fs-sm); color: var(--text-muted); }
+    .plan-card__price { text-align: right; flex: none; }
+    .plan-card__amount { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+    .plan-card__cycle { font-size: var(--fs-xs); color: var(--text-muted); }
+    .plan-card__actions { display: flex; gap: var(--space-2); flex: none; }
 
-    /* Grid de integrações */
-    .intg-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: var(--space-3); }
-    .intg-card { border: 0.5px solid var(--divider); border-radius: var(--radius-card); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); background: var(--surface); }
-    .intg-card--off { opacity: 0.72; }
-    .intg-card__head { display: flex; align-items: center; gap: var(--space-3); }
-    .intg-logo { width: 44px; height: 44px; border-radius: 12px; flex: none; display: flex; align-items: center; justify-content: center; color: #FFF7EE; font-weight: var(--fw-semibold); font-size: var(--fs-md); letter-spacing: -0.01em; --logo: var(--regulatory-base); background: linear-gradient(150deg, var(--logo), color-mix(in srgb, var(--logo) 70%, #2D231D)); }
-    .intg-card__id { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
-    .intg-card__name { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); letter-spacing: -0.005em; }
-    .intg-card__cat { font-size: var(--fs-xs); color: var(--text-muted); }
-    .intg-card__desc { font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.5; min-height: 40px; }
-    .intg-meta { display: flex; flex-direction: column; gap: 4px; }
-    .intg-meta__row { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--text-muted); }
-    .intg-meta__row span:last-child { color: var(--text); font-variant-numeric: tabular-nums; }
-    .intg-card__foot { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding-top: var(--space-3); border-top: 0.5px solid var(--divider); }
-    .intg-card__manage { font-size: var(--fs-sm); color: var(--brand); text-decoration: none; font-weight: var(--fw-medium); }
+    /* Uso */
+    .usage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4) var(--space-6); }
+    .usage-row { display: flex; flex-direction: column; gap: 7px; }
+    .usage-row__head { display: flex; justify-content: space-between; align-items: baseline; font-size: var(--fs-sm); }
+    .usage-row__label { color: var(--text); font-weight: var(--fw-medium); }
+    .usage-row__val { color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .usage-bar { height: 8px; background: rgba(45, 35, 29, 0.06); border-radius: var(--radius-pill); overflow: hidden; }
+    [data-theme="dark"] .usage-bar { background: rgba(241, 230, 214, 0.06); }
+    .usage-bar__fill { height: 100%; background: var(--care-base); border-radius: var(--radius-pill); }
+    .usage-bar__fill--warn { background: var(--attention-base); }
 
-    /* Switch */
-    .switch { width: 38px; height: 22px; border-radius: var(--radius-pill); background: var(--divider-strong); position: relative; cursor: pointer; flex: none; border: 0; padding: 0; transition: background var(--duration-fast) var(--ease-out); }
-    .switch[aria-checked="true"] { background: var(--care-base); }
-    .switch::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 50%; background: #FFF7EE; transition: transform var(--duration-fast) var(--ease-out); box-shadow: 0 1px 2px rgba(45,35,29,0.25); }
-    .switch[aria-checked="true"]::after { transform: translateX(16px); }
+    /* Método de pagamento */
+    .pay-row { display: flex; align-items: center; gap: var(--space-4); }
+    .pay-icon { width: 48px; height: 32px; border-radius: 7px; background: var(--sidebar); display: inline-flex; align-items: center; justify-content: center; flex: none; font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.04em; color: var(--text); }
+    .pay-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+    .pay-meta__primary { font-size: var(--fs-md); font-weight: var(--fw-medium); color: var(--text); font-variant-numeric: tabular-nums; }
+    .pay-meta__secondary { font-size: var(--fs-sm); color: var(--text-muted); }
 
-    /* API & webhooks */
-    .key-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--space-4); }
-    .key-row:last-child { margin-bottom: 0; }
-    .key-row__label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
-    .key-field { display: flex; align-items: center; gap: var(--space-3); background: var(--sidebar); border-radius: 10px; padding: 10px var(--space-3); }
-    .key-field__val { flex: 1; min-width: 0; font-size: var(--fs-sm); color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .key-field__btn { background: transparent; border: 0; color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; font-size: var(--fs-sm); font-family: inherit; font-weight: var(--fw-medium); }
-    .key-field__btn:hover { color: var(--text); }
-
-    .hook-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) 0; border-bottom: 0.5px solid var(--divider); font-size: var(--fs-sm); }
-    .hook-row:last-child { border-bottom: 0; padding-bottom: 0; }
-    .hook-row__ep { flex: 1; min-width: 0; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .hook-row__code { font-variant-numeric: tabular-nums; font-weight: var(--fw-semibold); color: var(--care-base); }
-    .hook-row__code--err { color: var(--attention-base); }
-    .hook-row__time { color: var(--text-faint); font-size: var(--fs-xs); font-variant-numeric: tabular-nums; flex: none; }
+    /* Tabela de faturas */
+    .set-table { width: 100%; border-collapse: collapse; font-size: var(--fs-base); }
+    .set-table thead th { text-align: left; font-weight: var(--fw-semibold); letter-spacing: 0.06em; text-transform: uppercase; font-size: var(--fs-sm); color: var(--text-muted); padding: var(--space-3) 0; border-bottom: 0.5px solid var(--divider); white-space: nowrap; }
+    .set-table tbody td { padding: var(--space-3) 0; border-bottom: 0.5px solid var(--divider); vertical-align: middle; }
+    .set-table tbody tr:last-child td { border-bottom: 0; }
+    .set-table .col-num { text-align: right; font-variant-numeric: tabular-nums; }
+    .set-table .col-actions { text-align: right; width: 80px; }
+    .set-table .tabular { font-variant-numeric: tabular-nums; }
+    .inv-link { font-size: var(--fs-sm); color: var(--brand); text-decoration: none; font-weight: var(--fw-medium); display: inline-flex; align-items: center; gap: 5px; }
+    .inv-period { color: var(--text-muted); font-size: var(--fs-sm); }
 
     @media (max-width: 1040px) { .set-layout { grid-template-columns: 1fr; } .set-nav { flex-direction: row; flex-wrap: wrap; position: static; } .set-nav__group-title { width: 100%; } }
     @media (max-width: 960px) { .dash-shell { grid-template-columns: 1fr; } .dash-sidebar { display: none; } }
+    @media (max-width: 720px) { .usage-grid { grid-template-columns: 1fr; } .col-period { display: none; } }
   </style>
 </head>
 <body>
@@ -181,7 +182,7 @@
           <span style="color: var(--text-faint);">/</span>
           <a href="configuracoes.html" style="color: var(--text-muted); text-decoration: none;">Configurações</a>
           <span style="color: var(--text-faint);">/</span>
-          <span class="dash-topbar__title">Integrações</span>
+          <span class="dash-topbar__title">Faturamento</span>
         </div>
         <div class="dash-topbar__actions">
           <button class="icon-btn" aria-label="Notificações" style="position: relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="status-dot status-dot--attention" style="position: absolute; top: 7px; right: 7px; width: 7px; height: 7px;"></span></button>
@@ -197,7 +198,7 @@
         <section class="ord-header reveal">
           <div>
             <h1 class="ord-header__title">Configurações</h1>
-            <p class="text-muted" style="font-size: var(--fs-sm); margin: 2px 0 0;">Organização <strong style="color: var(--text); font-weight: var(--fw-semibold);">Setty</strong> · serviços conectados à operação.</p>
+            <p class="text-muted" style="font-size: var(--fs-sm); margin: 2px 0 0;">Organização <strong style="color: var(--text); font-weight: var(--fw-semibold);">Setty</strong> · plano, uso e faturas da assinatura lumi.</p>
           </div>
         </section>
 
@@ -207,194 +208,134 @@
             <span class="set-nav__group-title">Organização</span>
             <a class="set-nav__item" href="configuracoes.html"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>Geral</a>
             <a class="set-nav__item" href="configuracoes.html"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Equipe &amp; permissões</a>
-            <a class="set-nav__item" href="integracoes.html" aria-current="true"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Integrações<span class="set-nav__badge">3</span></a>
-            <a class="set-nav__item" href="faturamento.html"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Faturamento</a>
+            <a class="set-nav__item" href="integracoes.html"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Integrações<span class="set-nav__badge">3</span></a>
+            <a class="set-nav__item" href="faturamento.html" aria-current="true"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Faturamento</a>
             <a class="set-nav__item" href="configuracoes.html"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Segurança &amp; auditoria</a>
             <a class="set-nav__item" href="configuracoes.html"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notificações</a>
           </nav>
 
-          <!-- Seção: Integrações -->
+          <!-- Seção: Faturamento -->
           <div class="set-section">
-            <!-- Alerta: sessão Gov.br -->
-            <section class="intg-alert" role="status">
-              <span class="status-dot status-dot--attention status-dot--pulse"></span>
-              <div class="intg-alert__body">
-                <span class="intg-alert__title">Sessão Gov.br expira em 2 dias</span>
-                <span class="intg-alert__desc">O bot de peticionamento Anvisa precisa de reautenticação para continuar autorizando pedidos.</span>
+            <!-- Plano atual -->
+            <section class="plan-card">
+              <div class="plan-card__body">
+                <span class="plan-card__name"><span class="plan-card__tier">lumi Scale</span><span class="plan-card__pill">Plano atual</span></span>
+                <span class="plan-card__meta">Cobrança mensal · próxima fatura em <strong style="color: var(--text); font-weight: var(--fw-medium);">01 jul 2026</strong> · contrato anual</span>
               </div>
-              <button class="btn btn--secondary btn--sm">Reautenticar</button>
-            </section>
-
-            <!-- Conexões -->
-            <section class="set-block">
-              <div class="set-block__head">
-                <div>
-                  <h2 class="set-block__title">Serviços conectados</h2>
-                  <p class="set-block__desc">5 integrações · 3 conectadas · 1 requer atenção</p>
-                </div>
-                <button class="btn btn--secondary">Explorar catálogo</button>
+              <div class="plan-card__price">
+                <div class="plan-card__amount">R$ 2.900<span style="font-size: var(--fs-md); color: var(--text-muted);">/mês</span></div>
+                <div class="plan-card__cycle">+ R$ 6 por pedido acima de 250</div>
               </div>
-              <div class="intg-grid">
-
-                <!-- Memphis -->
-                <article class="intg-card">
-                  <div class="intg-card__head">
-                    <span class="intg-logo" style="--logo: var(--regulatory-base);">Me</span>
-                    <div class="intg-card__id">
-                      <span class="intg-card__name">Memphis</span>
-                      <span class="intg-card__cat">Transportadora · Logística</span>
-                    </div>
-                    <span class="badge badge--care"><span class="status-dot status-dot--care"></span>Conectado</span>
-                  </div>
-                  <p class="intg-card__desc">Rastreio automático dos envios Paraguai → Brasil e baixa de entregas via webhook.</p>
-                  <div class="intg-meta">
-                    <div class="intg-meta__row"><span>Última sincronização</span><span>há 5 min</span></div>
-                    <div class="intg-meta__row"><span>Conta</span><span>SETTY-BR-0042</span></div>
-                  </div>
-                  <div class="intg-card__foot">
-                    <button class="switch" role="switch" aria-checked="true" aria-label="Ativar Memphis"></button>
-                    <a class="intg-card__manage" href="#">Gerenciar →</a>
-                  </div>
-                </article>
-
-                <!-- Global Pace -->
-                <article class="intg-card">
-                  <div class="intg-card__head">
-                    <span class="intg-logo" style="--logo: #7E9170;">GP</span>
-                    <div class="intg-card__id">
-                      <span class="intg-card__name">Global Pace</span>
-                      <span class="intg-card__cat">Pagamentos · Financeiro</span>
-                    </div>
-                    <span class="badge badge--care"><span class="status-dot status-dot--care"></span>Conectado</span>
-                  </div>
-                  <p class="intg-card__desc">Links de cobrança PIX, cartão e boleto, com conciliação automática por webhook.</p>
-                  <div class="intg-meta">
-                    <div class="intg-meta__row"><span>Última sincronização</span><span>há 2 min</span></div>
-                    <div class="intg-meta__row"><span>Conta</span><span>gp_merchant_8841</span></div>
-                  </div>
-                  <div class="intg-card__foot">
-                    <button class="switch" role="switch" aria-checked="true" aria-label="Ativar Global Pace"></button>
-                    <a class="intg-card__manage" href="#">Gerenciar →</a>
-                  </div>
-                </article>
-
-                <!-- Gov.br / Anvisa -->
-                <article class="intg-card">
-                  <div class="intg-card__head">
-                    <span class="intg-logo" style="--logo: var(--attention-base);">Gov</span>
-                    <div class="intg-card__id">
-                      <span class="intg-card__name">Gov.br · Anvisa</span>
-                      <span class="intg-card__cat">Autorizações · Regulatório</span>
-                    </div>
-                    <span class="badge badge--attention"><span class="status-dot status-dot--attention status-dot--pulse"></span>Sessão expirando</span>
-                  </div>
-                  <p class="intg-card__desc">Bot de peticionamento de autorizações de importação no portal da Anvisa via Gov.br.</p>
-                  <div class="intg-meta">
-                    <div class="intg-meta__row"><span>Última execução</span><span>há 1 h</span></div>
-                    <div class="intg-meta__row"><span>Sessão válida até</span><span>07 jun 2026</span></div>
-                  </div>
-                  <div class="intg-card__foot">
-                    <button class="switch" role="switch" aria-checked="true" aria-label="Ativar Gov.br Anvisa"></button>
-                    <a class="intg-card__manage" href="anvisa.html">Gerenciar →</a>
-                  </div>
-                </article>
-
-                <!-- WhatsApp Business -->
-                <article class="intg-card">
-                  <div class="intg-card__head">
-                    <span class="intg-logo" style="--logo: #4E7C59;">Wa</span>
-                    <div class="intg-card__id">
-                      <span class="intg-card__name">WhatsApp Business</span>
-                      <span class="intg-card__cat">Mensageria · Atendimento</span>
-                    </div>
-                    <span class="badge badge--care"><span class="status-dot status-dot--care"></span>Conectado</span>
-                  </div>
-                  <p class="intg-card__desc">Notificações de status do pedido e atendimento às pacientes pelo número oficial.</p>
-                  <div class="intg-meta">
-                    <div class="intg-meta__row"><span>Última sincronização</span><span>há 12 min</span></div>
-                    <div class="intg-meta__row"><span>Número</span><span>+55 11 4000-1234</span></div>
-                  </div>
-                  <div class="intg-card__foot">
-                    <button class="switch" role="switch" aria-checked="true" aria-label="Ativar WhatsApp Business"></button>
-                    <a class="intg-card__manage" href="#">Gerenciar →</a>
-                  </div>
-                </article>
-
-                <!-- Memed (disponível) -->
-                <article class="intg-card intg-card--off">
-                  <div class="intg-card__head">
-                    <span class="intg-logo" style="--logo: #8A7BB8;">Md</span>
-                    <div class="intg-card__id">
-                      <span class="intg-card__name">Memed</span>
-                      <span class="intg-card__cat">Receita digital · Prescrição</span>
-                    </div>
-                    <span class="badge"><span class="status-dot"></span>Disponível</span>
-                  </div>
-                  <p class="intg-card__desc">Importar prescrições digitais assinadas diretamente do prontuário do médico.</p>
-                  <div class="intg-meta">
-                    <div class="intg-meta__row"><span>Categoria</span><span>Prescrição</span></div>
-                    <div class="intg-meta__row"><span>Plano</span><span>incluído</span></div>
-                  </div>
-                  <div class="intg-card__foot">
-                    <span style="font-size: var(--fs-sm); color: var(--text-faint);">Não conectado</span>
-                    <a class="intg-card__manage" href="#">Conectar →</a>
-                  </div>
-                </article>
-
-                <!-- NF-e (disponível) -->
-                <article class="intg-card intg-card--off">
-                  <div class="intg-card__head">
-                    <span class="intg-logo" style="--logo: #B7873F;">NF</span>
-                    <div class="intg-card__id">
-                      <span class="intg-card__name">NF-e · Fiscal</span>
-                      <span class="intg-card__cat">Emissão fiscal · Financeiro</span>
-                    </div>
-                    <span class="badge"><span class="status-dot"></span>Disponível</span>
-                  </div>
-                  <p class="intg-card__desc">Emissão automática de nota fiscal de serviço a cada pedido concluído.</p>
-                  <div class="intg-meta">
-                    <div class="intg-meta__row"><span>Categoria</span><span>Fiscal</span></div>
-                    <div class="intg-meta__row"><span>Plano</span><span>add-on</span></div>
-                  </div>
-                  <div class="intg-card__foot">
-                    <span style="font-size: var(--fs-sm); color: var(--text-faint);">Não conectado</span>
-                    <a class="intg-card__manage" href="#">Conectar →</a>
-                  </div>
-                </article>
-
+              <div class="plan-card__actions">
+                <button class="btn btn--secondary">Ver planos</button>
+                <button class="btn btn--primary">Mudar plano</button>
               </div>
             </section>
 
-            <!-- API & Webhooks -->
+            <!-- Uso no ciclo -->
             <section class="set-block">
               <div class="set-block__head">
                 <div>
-                  <h2 class="set-block__title">Chaves de API &amp; webhooks</h2>
-                  <p class="set-block__desc">Credenciais e entregas recentes do endpoint da operação.</p>
+                  <h2 class="set-block__title">Uso no ciclo</h2>
+                  <p class="set-block__desc">01 jun – 30 jun 2026 · 26 dias restantes</p>
                 </div>
-                <button class="btn btn--secondary">Rotacionar chave</button>
               </div>
+              <div class="usage-grid">
+                <div class="usage-row">
+                  <div class="usage-row__head"><span class="usage-row__label">Pedidos processados</span><span class="usage-row__val">132 / 250</span></div>
+                  <div class="usage-bar"><div class="usage-bar__fill" style="width: 53%;"></div></div>
+                </div>
+                <div class="usage-row">
+                  <div class="usage-row__head"><span class="usage-row__label">Pacientes ativos</span><span class="usage-row__val">47 / 100</span></div>
+                  <div class="usage-bar"><div class="usage-bar__fill" style="width: 47%;"></div></div>
+                </div>
+                <div class="usage-row">
+                  <div class="usage-row__head"><span class="usage-row__label">Usuários</span><span class="usage-row__val">6 / 10</span></div>
+                  <div class="usage-bar"><div class="usage-bar__fill" style="width: 60%;"></div></div>
+                </div>
+                <div class="usage-row">
+                  <div class="usage-row__head"><span class="usage-row__label">Mensagens WhatsApp</span><span class="usage-row__val">2.180 / 2.500</span></div>
+                  <div class="usage-bar"><div class="usage-bar__fill usage-bar__fill--warn" style="width: 87%;"></div></div>
+                </div>
+              </div>
+            </section>
 
-              <div class="key-row">
-                <span class="key-row__label">Chave de API (produção)</span>
-                <div class="key-field">
-                  <span class="key-field__val">lumi_live_sk_8f2a••••••••••••••••••3f2a</span>
-                  <button class="key-field__btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+            <!-- Método de pagamento -->
+            <section class="set-block">
+              <div class="set-block__head">
+                <div>
+                  <h2 class="set-block__title">Método de pagamento</h2>
+                  <p class="set-block__desc">Cobranças da assinatura lumi.</p>
                 </div>
+                <button class="btn btn--secondary">Atualizar</button>
               </div>
-              <div class="key-row">
-                <span class="key-row__label">URL de webhook</span>
-                <div class="key-field">
-                  <span class="key-field__val">https://api.setty.com.br/lumi/webhooks</span>
-                  <button class="key-field__btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              <div class="pay-row">
+                <span class="pay-icon">VISA</span>
+                <div class="pay-meta">
+                  <span class="pay-meta__primary">•••• •••• •••• 4242</span>
+                  <span class="pay-meta__secondary">Expira 09/2027 · cobrança para financeiro@setty.com.br</span>
                 </div>
+                <span class="badge badge--care"><span class="status-dot status-dot--care"></span>Ativo</span>
               </div>
+            </section>
 
-              <span class="key-row__label" style="display:block; margin: var(--space-4) 0 var(--space-2);">Entregas recentes</span>
-              <div class="hook-row"><span class="status-dot status-dot--care"></span><span class="hook-row__ep">payment.confirmed · Global Pace</span><span class="hook-row__code">200</span><span class="hook-row__time">há 2 min</span></div>
-              <div class="hook-row"><span class="status-dot status-dot--care"></span><span class="hook-row__ep">shipment.updated · Memphis</span><span class="hook-row__code">200</span><span class="hook-row__time">há 5 min</span></div>
-              <div class="hook-row"><span class="status-dot status-dot--attention"></span><span class="hook-row__ep">anvisa.session · Gov.br</span><span class="hook-row__code hook-row__code--err">401</span><span class="hook-row__time">há 1 h</span></div>
-              <div class="hook-row"><span class="status-dot status-dot--care"></span><span class="hook-row__ep">order.delivered · Memphis</span><span class="hook-row__code">200</span><span class="hook-row__time">há 3 h</span></div>
+            <!-- Faturas -->
+            <section class="set-block">
+              <div class="set-block__head">
+                <div>
+                  <h2 class="set-block__title">Faturas</h2>
+                  <p class="set-block__desc">Histórico de cobranças da assinatura.</p>
+                </div>
+                <button class="btn btn--secondary">Baixar todas</button>
+              </div>
+              <table class="set-table">
+                <thead>
+                  <tr>
+                    <th>Fatura</th>
+                    <th class="col-period">Período</th>
+                    <th class="col-num">Valor</th>
+                    <th>Status</th>
+                    <th class="col-actions">PDF</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>jun 2026</td>
+                    <td class="col-period inv-period">01 jun – 30 jun</td>
+                    <td class="col-num tabular">R$ 2.900,00</td>
+                    <td><span class="badge badge--attention"><span class="status-dot status-dot--attention"></span>Em aberto · vence 01 jul</span></td>
+                    <td class="col-actions"><span style="color: var(--text-faint); font-size: var(--fs-sm);">—</span></td>
+                  </tr>
+                  <tr>
+                    <td>mai 2026</td>
+                    <td class="col-period inv-period">01 mai – 31 mai</td>
+                    <td class="col-num tabular">R$ 2.900,00</td>
+                    <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Pago</span></td>
+                    <td class="col-actions"><a class="inv-link" href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></td>
+                  </tr>
+                  <tr>
+                    <td>abr 2026</td>
+                    <td class="col-period inv-period">01 abr – 30 abr</td>
+                    <td class="col-num tabular">R$ 2.900,00</td>
+                    <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Pago</span></td>
+                    <td class="col-actions"><a class="inv-link" href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></td>
+                  </tr>
+                  <tr>
+                    <td>mar 2026</td>
+                    <td class="col-period inv-period">01 mar – 31 mar</td>
+                    <td class="col-num tabular">R$ 2.900,00</td>
+                    <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Pago</span></td>
+                    <td class="col-actions"><a class="inv-link" href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></td>
+                  </tr>
+                  <tr>
+                    <td>fev 2026</td>
+                    <td class="col-period inv-period">01 fev – 28 fev</td>
+                    <td class="col-num tabular">R$ 2.640,00</td>
+                    <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Pago</span></td>
+                    <td class="col-actions"><a class="inv-link" href="#"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></a></td>
+                  </tr>
+                </tbody>
+              </table>
             </section>
           </div>
         </div>
@@ -415,11 +356,6 @@
       const saved = localStorage.getItem("lumi-theme");
       if (saved === "light" || saved === "dark") apply(saved);
     } catch (_) {}
-
-    // Switches (visual)
-    document.querySelectorAll(".switch").forEach((s) => s.addEventListener("click", () => {
-      s.setAttribute("aria-checked", s.getAttribute("aria-checked") === "true" ? "false" : "true");
-    }));
   </script>
 </body>
 </html>

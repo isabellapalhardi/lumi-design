@@ -53,6 +53,7 @@ lumi-design/
 | 19 | `pages/produto-detalhe.html` | **Fechado** — ficha do produto (CBD Full Spectrum 3000mg) · header com faixa de categoria · ficha técnica · estoque com ponto de reposição + importação Memphis · posologia & indicações · side col com preço/margem, desempenho e movimentação |
 | 20 | `pages/medico-detalhe.html` | **Fechado** — ficha do prescritor (Dr. Carlos Andrade) · dados profissionais + CRM/RQE · pacientes vinculados (linkados) · prescrições recentes · side col com desempenho, áreas de atuação e contato |
 | 21 | `pages/integracoes.html` | **Fechado** — Configurações › Integrações · cards de conexão (Memphis, Global Pace, Gov.br/Anvisa, WhatsApp + Memed/NF-e disponíveis) com status, sincronização e switch · alerta de sessão Gov.br · bloco de chaves de API & webhooks com entregas recentes |
+| 22 | `pages/faturamento.html` | **Fechado** — Configurações › Faturamento · plano lumi Scale (card coral) · medidores de uso no ciclo · método de pagamento · histórico de faturas (pago / em aberto) |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 
