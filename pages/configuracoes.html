@@ -198,7 +198,7 @@
             <span class="set-nav__group-title">Organização</span>
             <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>Geral</a>
             <a class="set-nav__item" href="#" aria-current="true"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Equipe &amp; permissões</a>
-            <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Integrações<span class="set-nav__badge">3</span></a>
+            <a class="set-nav__item" href="integracoes.html"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Integrações<span class="set-nav__badge">3</span></a>
             <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Faturamento</a>
             <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Segurança &amp; auditoria</a>
             <a class="set-nav__item" href="#"><svg class="set-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notificações</a>
@@ -345,9 +345,13 @@
     // Sub-nav: troca de seção (visual apenas neste mockup)
     const setItems = document.querySelectorAll(".set-nav__item");
     setItems.forEach((it) => it.addEventListener("click", (e) => {
-      e.preventDefault();
-      setItems.forEach((x) => x.removeAttribute("aria-current"));
-      it.setAttribute("aria-current", "true");
+      const href = it.getAttribute("href");
+      if (!href || href === "#") {
+        e.preventDefault();
+        setItems.forEach((x) => x.removeAttribute("aria-current"));
+        it.setAttribute("aria-current", "true");
+      }
+      // links reais (ex.: integracoes.html) navegam normalmente
     }));
   </script>
 </body>
