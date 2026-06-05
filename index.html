@@ -3,90 +3,250 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>lumi · design</title>
+  <title>lumi · mockups</title>
   <link rel="stylesheet" href="styles/tokens.css" />
   <link rel="stylesheet" href="styles/components.css" />
   <style>
-    body { padding: var(--space-7); display: flex; flex-direction: column; gap: var(--space-6); max-width: 720px; margin: 0 auto; }
-    h1 { font-family: var(--font-serif); font-weight: 500; font-size: 64px; line-height: 1; letter-spacing: -0.03em; color: var(--brand); margin: 0; font-optical-sizing: auto; }
-    .links { display: flex; flex-direction: column; gap: var(--space-3); }
-    .link-card { background: var(--surface); border: 0.5px solid var(--divider); border-radius: var(--radius-card); padding: var(--space-5); text-decoration: none; color: var(--text); transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
-    .link-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); text-decoration: none; }
-    .link-card__title { font-weight: var(--fw-semibold); font-size: var(--fs-md); }
-    .link-card__desc { color: var(--text-muted); font-size: var(--fs-sm); margin-top: 4px; }
+    .hero {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: var(--space-8) var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-7);
+    }
+    .hero__wordmark {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 84px;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      color: var(--brand);
+      font-optical-sizing: auto;
+    }
+    .hero__sub {
+      font-size: var(--fs-lg);
+      color: var(--text-muted);
+      max-width: 560px;
+      line-height: 1.5;
+    }
+    .hero__intro { display: flex; flex-direction: column; gap: var(--space-3); }
+    .hero__tag {
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-4);
+    }
+    .page-link {
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      padding: var(--space-5);
+      border: 0.5px solid var(--divider);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      box-shadow: var(--shadow-sm);
+      text-decoration: none;
+      color: var(--text);
+      transition: transform var(--duration-base) var(--ease-out), box-shadow var(--duration-base) var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-link:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      text-decoration: none;
+    }
+    .page-link__num {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 40px;
+      letter-spacing: -0.02em;
+      color: var(--brand);
+      line-height: 1;
+      font-optical-sizing: auto;
+    }
+    .page-link__title {
+      font-size: var(--fs-md);
+      font-weight: var(--fw-semibold);
+      margin: 0;
+    }
+    .page-link__desc {
+      font-size: var(--fs-sm);
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .page-link--coming { opacity: 0.55; pointer-events: none; }
+    .page-link__module {
+      position: absolute;
+      top: var(--space-4);
+      right: var(--space-4);
+    }
+
+    .toolbar {
+      position: fixed;
+      top: var(--space-4);
+      right: var(--space-4);
+      z-index: 20;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <span class="label" style="color: var(--text-faint);">lumi · design</span>
-    <h1>lumi</h1>
-    <p style="color: var(--text-muted); margin: var(--space-3) 0 0; font-size: var(--fs-md);">Brand system &amp; mockups · plataforma de cannabis medicinal.</p>
-  </header>
+  <div class="toolbar">
+    <div class="theme-toggle" role="group" aria-label="Tema">
+      <button class="theme-toggle__opt" data-theme-set="light" aria-pressed="true" aria-label="Tema claro">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg>
+      </button>
+      <button class="theme-toggle__opt" data-theme-set="dark" aria-pressed="false" aria-label="Tema escuro">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
 
-  <section class="links">
-    <a class="link-card" href="pages/login.html">
-      <div>
-        <div class="link-card__title">Login</div>
-        <div class="link-card__desc">Tela de entrada — moldura coral, painel em vidro fosco, wordmark central, form com border coral.</div>
+  <main class="hero" style="position: relative; z-index: 1;">
+    <header class="hero__intro reveal">
+      <span class="hero__tag">lumi · brand system</span>
+      <h1 class="hero__wordmark">lumi</h1>
+      <p class="hero__sub">
+        Mockups visuais da plataforma de cannabis medicinal.
+        Direção: <em>mineral e quente</em> — brasileiro sem caricatura.
+        Tema claro e escuro nativos.
+      </p>
+    </header>
+
+    <section class="stack stack--md reveal">
+      <div class="inline inline--between">
+        <h2 class="h-section">Telas</h2>
+        <span class="label">14 telas · fluxo completo</span>
       </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-    <a class="link-card" href="pages/dashboard.html">
-      <div>
-        <div class="link-card__title">Dashboard · Início</div>
-        <div class="link-card__desc">Página inicial do admin · stats operacionais, alerta Anvisa, pipeline do módulo Pro, pacientes precisando atenção, atividade recente.</div>
+
+      <div class="page-grid">
+        <a class="page-link" href="pages/login.html">
+          <span class="badge badge--attention page-link__module">Acesso</span>
+          <span class="page-link__num">01</span>
+          <h3 class="page-link__title">Login</h3>
+          <p class="page-link__desc">Entrada do operador. Wordmark, campos com foco coral, tema claro e escuro nativos.</p>
+        </a>
+
+        <a class="page-link" href="pages/dashboard.html">
+          <span class="badge badge--regulatory page-link__module">Operação</span>
+          <span class="page-link__num">02</span>
+          <h3 class="page-link__title">Dashboard</h3>
+          <p class="page-link__desc">Visão geral: stats do fluxo, pedidos por estágio, alertas Anvisa, atividade recente.</p>
+        </a>
+
+        <a class="page-link" href="pages/pacientes.html">
+          <span class="badge badge--regulatory page-link__module">Operação</span>
+          <span class="page-link__num">03</span>
+          <h3 class="page-link__title">Pacientes · lista</h3>
+          <p class="page-link__desc">Grade e tabela de pacientes, busca, filtros por estágio, validade da Anvisa.</p>
+        </a>
+
+        <a class="page-link" href="pages/paciente-novo.html">
+          <span class="badge badge--regulatory page-link__module">Operação</span>
+          <span class="page-link__num">04</span>
+          <h3 class="page-link__title">Paciente · cadastro</h3>
+          <p class="page-link__desc">Form em etapas: dados pessoais, endereço, uploads (RG, receita, comprovante), revisão.</p>
+        </a>
+
+        <a class="page-link" href="pages/paciente-detalhe.html">
+          <span class="badge badge--regulatory page-link__module">Operação</span>
+          <span class="page-link__num">05</span>
+          <h3 class="page-link__title">Paciente · detalhe</h3>
+          <p class="page-link__desc">Ficha completa: prescrição, tratamento, documentos, histórico de pedidos.</p>
+        </a>
+
+        <a class="page-link" href="pages/pro-paciente.html">
+          <span class="badge badge--care page-link__module">Pro</span>
+          <span class="page-link__num">06</span>
+          <h3 class="page-link__title">Paciente · módulo Pro</h3>
+          <p class="page-link__desc">Tela de validação do brand system. Stats, alerta crítico Anvisa, prescrição, linha do tratamento.</p>
+        </a>
+
+        <a class="page-link" href="pages/pedidos.html">
+          <span class="badge badge--regulatory page-link__module">Operação</span>
+          <span class="page-link__num">07</span>
+          <h3 class="page-link__title">Pedidos · lista</h3>
+          <p class="page-link__desc">Pedidos em todos os estágios. Grade e tabela, mini-stats, filtros por etapa do fluxo.</p>
+        </a>
+
+        <a class="page-link" href="pages/pedido-detalhe.html">
+          <span class="badge badge--regulatory page-link__module">Operação</span>
+          <span class="page-link__num">08</span>
+          <h3 class="page-link__title">Pedido · detalhe</h3>
+          <p class="page-link__desc">Linha do tempo do pedido: prescrição → procuração → Anvisa → pagamento → logística → entrega.</p>
+        </a>
+
+        <a class="page-link" href="pages/anvisa.html">
+          <span class="badge badge--attention page-link__module">Regulatório</span>
+          <span class="page-link__num">09</span>
+          <h3 class="page-link__title">Anvisa</h3>
+          <p class="page-link__desc">Fila de autorizações, bot Gov.br, protocolos, status das petições e prazos.</p>
+        </a>
+
+        <a class="page-link" href="pages/financeiro.html">
+          <span class="badge badge--care page-link__module">Financeiro</span>
+          <span class="page-link__num">10</span>
+          <h3 class="page-link__title">Financeiro · cobranças</h3>
+          <p class="page-link__desc">Gestão de cobranças Global Pace: a receber, vencidas, pagas, conciliação por webhook.</p>
+        </a>
+
+        <a class="page-link" href="pages/pagamento-detalhe.html">
+          <span class="badge badge--care page-link__module">Financeiro</span>
+          <span class="page-link__num">11</span>
+          <h3 class="page-link__title">Pagamento · detalhe</h3>
+          <p class="page-link__desc">Cobrança de um pedido: link Global Pace, PIX/cartão/boleto, timeline e liberação da logística.</p>
+        </a>
+
+        <a class="page-link" href="pages/logistica.html">
+          <span class="badge badge--regulatory page-link__module">Logística</span>
+          <span class="page-link__num">12</span>
+          <h3 class="page-link__title">Logística · lista</h3>
+          <p class="page-link__desc">Torre de controle dos envios internacionais. Transportadora Memphis, rota Paraguai → Brasil, envios ativos.</p>
+        </a>
+
+        <a class="page-link" href="pages/logistica-detalhe.html">
+          <span class="badge badge--regulatory page-link__module">Logística</span>
+          <span class="page-link__num">13</span>
+          <h3 class="page-link__title">Logística · detalhe</h3>
+          <p class="page-link__desc">Rastreio de um envio (#BR2934118): linha do tempo do tracking Memphis, etapas e situação aduaneira.</p>
+        </a>
+
+        <a class="page-link" href="pages/farmacovigilancia.html">
+          <span class="badge badge--care page-link__module">Clínico</span>
+          <span class="page-link__num">14</span>
+          <h3 class="page-link__title">Farmacovigilância</h3>
+          <p class="page-link__desc">Pós-venda clínico: check-ins periódicos, evolução do tratamento e registro de efeitos adversos.</p>
+        </a>
       </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-    <a class="link-card" href="pages/pacientes.html">
-      <div>
-        <div class="link-card__title">Lista de Pacientes</div>
-        <div class="link-card__desc">Lista com toggle grade/tabela · busca, filtros por estágio, pulso de alerta em vencimentos urgentes, ações por linha.</div>
-      </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-    <a class="link-card" href="pages/paciente-detalhe.html">
-      <div>
-        <div class="link-card__title">Detalhe do Paciente</div>
-        <div class="link-card__desc">Página densa de validação · header com identidade + badges + ações · 4 stats semânticos · alerta Anvisa · prescrição + linha do tratamento · tabela de histórico.</div>
-      </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-    <a class="link-card" href="pages/paciente-novo.html">
-      <div>
-        <div class="link-card__title">Novo Cadastro de Paciente</div>
-        <div class="link-card__desc">Form multi-step (4 etapas) · stepper com estados visited/current/pending · radio pills · auto-save com indicador discreto · navegação Voltar/Próximo.</div>
-      </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-    <a class="link-card" href="pages/pedidos.html">
-      <div>
-        <div class="link-card__title">Lista de Pedidos</div>
-        <div class="link-card__desc">Pedidos em todos os estágios · 4 mini-stats semânticos · toggle grade/lista · cards com mini-timeline horizontal de progresso (6 estágios) · produto destacado com border-left coral.</div>
-      </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-    <a class="link-card" href="pages/pedido-detalhe.html">
-      <div>
-        <div class="link-card__title">Detalhe do Pedido</div>
-        <div class="link-card__desc">Header com código + paciente · hero do estágio atual com progresso · timeline vertical de 6 estágios com sub-eventos de tracking · side col com paciente + produto + breakdown financeiro.</div>
-      </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-    <a class="link-card" href="pages/anvisa.html">
-      <div>
-        <div class="link-card__title">Anvisa · saúde operacional</div>
-        <div class="link-card__desc">Alerta crítico de sessão Gov.br · 4 mini-stats · card do bot Anvisa com sessão / fila / taxa de sucesso / procuradora · lista de protocolos com captcha pendente, autorizada, em análise e renovação.</div>
-      </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-    <a class="link-card" href="TOKENS.md">
-      <div>
-        <div class="link-card__title">Design tokens</div>
-        <div class="link-card__desc">Documentação dos tokens · cores, paleta semântica, tipografia, raios, regra de ouro do coral.</div>
-      </div>
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-    </a>
-  </section>
+    </section>
+
+    <footer class="text-faint reveal" style="padding-top: var(--space-6); font-size: var(--fs-xs); border-top: 0.5px solid var(--divider);">
+      Mockups estáticos · HTML/CSS · não conectados a backend ·
+      <a href="TOKENS.md">documentação dos tokens →</a>
+    </footer>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    const opts = document.querySelectorAll(".theme-toggle__opt");
+    const apply = (mode) => {
+      root.setAttribute("data-theme", mode);
+      opts.forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === mode ? "true" : "false"));
+      try { localStorage.setItem("lumi-theme", mode); } catch (_) {}
+    };
+    opts.forEach((b) => b.addEventListener("click", () => apply(b.dataset.themeSet)));
+    try {
+      const saved = localStorage.getItem("lumi-theme");
+      if (saved === "light" || saved === "dark") apply(saved);
+    } catch (_) {}
+  </script>
 </body>
 </html>

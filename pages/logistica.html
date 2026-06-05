@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Logística · lumi</title>
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <style>
+    html { margin: 0; padding: 0; background: var(--brand); }
+    body {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: 0;
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      background: var(--brand);
+      overflow: hidden;
+    }
+
+    .dash-shell {
+      flex: 1;
+      height: 100%;
+      align-self: stretch;
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px -28px rgba(45, 35, 29, 0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.30), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.20), transparent 65%),
+        rgba(236, 224, 204, 0.88);
+    }
+    [data-theme="dark"] .dash-shell {
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.22), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.16), transparent 65%),
+        rgba(34, 28, 24, 0.96);
+    }
+
+    /* SIDEBAR */
+    .dash-sidebar { padding: var(--space-5) var(--space-4) var(--space-4); display: flex; flex-direction: column; gap: var(--space-6); border-right: 0.5px solid var(--divider); overflow-y: auto; background: transparent; }
+    .dash-brand { padding: 0 var(--space-3); }
+    .dash-brand__wordmark { font-family: var(--font-serif); font-weight: 500; font-size: 34px; letter-spacing: -0.02em; line-height: 1; color: var(--brand); font-optical-sizing: auto; margin: 0; }
+    .dash-nav { display: flex; flex-direction: column; gap: var(--space-5); }
+    .dash-nav__group { display: flex; flex-direction: column; gap: 2px; }
+    .dash-nav__group-title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); padding: 0 var(--space-3); margin-bottom: var(--space-2); }
+    .dash-nav__link { display: flex; align-items: center; gap: var(--space-3); padding: 8px var(--space-3); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--fs-base); font-weight: var(--fw-medium); cursor: pointer; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); text-decoration: none; position: relative; }
+    .dash-nav__link:hover { background: rgba(45, 35, 29, 0.05); color: var(--text); text-decoration: none; }
+    [data-theme="dark"] .dash-nav__link:hover { background: rgba(241, 230, 214, 0.05); }
+    .dash-nav__link[aria-current="page"] { background: var(--brand); color: #FFF7EE; }
+    .dash-nav__link[aria-current="page"]:hover { background: var(--brand-strong); }
+    .dash-nav__icon { width: 18px; height: 18px; flex: none; }
+    .dash-nav__badge { margin-left: auto; font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 1px 6px; border-radius: var(--radius-pill); background: var(--attention-fill); color: var(--attention-base); }
+    .dash-nav__link[aria-current="page"] .dash-nav__badge { background: rgba(255, 247, 238, 0.22); color: #FFF7EE; }
+    .dash-sidebar__footer { margin-top: auto; padding: var(--space-3); display: flex; align-items: center; gap: var(--space-3); border-top: 0.5px solid var(--divider); padding-top: var(--space-4); }
+    .dash-user-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .dash-user-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dash-user-role { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* MAIN */
+    .dash-main { display: flex; flex-direction: column; overflow: hidden; min-width: 0; min-height: 0; }
+    .dash-topbar { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-6); border-bottom: 0.5px solid var(--divider); background: transparent; flex: none; }
+    .dash-topbar__title { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); }
+    .dash-topbar__actions { display: flex; align-items: center; gap: var(--space-3); }
+    .dash-content { flex: 1; overflow-y: auto; min-height: 0; padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+
+    /* Page header */
+    .ord-header { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+    .ord-header__title { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); letter-spacing: -0.015em; line-height: 1.1; margin: 0; display: inline-flex; align-items: baseline; gap: var(--space-3); }
+    .ord-header__count { font-size: var(--fs-md); font-weight: var(--fw-medium); color: var(--text-muted); letter-spacing: 0; }
+    .ord-header__actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+    /* Alerta de envio parado */
+    .log-alert { display: flex; gap: var(--space-4); padding: var(--space-4) var(--space-5); border-radius: var(--radius-card); background: var(--attention-fill); align-items: center; }
+    .log-alert__icon { width: 36px; height: 36px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.45); display: inline-flex; align-items: center; justify-content: center; flex: none; color: var(--attention-base); }
+    [data-theme="dark"] .log-alert__icon { background: rgba(241, 230, 214, 0.06); }
+    .log-alert__body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+    .log-alert__title { font-weight: var(--fw-semibold); font-size: var(--fs-md); }
+    .log-alert__desc { font-size: var(--fs-sm); color: var(--text-muted); }
+
+    /* Mini stats */
+    .ord-mini-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+    .ord-mini-stat { background: var(--surface); border-radius: var(--radius-card); border: 0.5px solid var(--divider); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4); position: relative; overflow: hidden; }
+    .ord-mini-stat::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--mini-color, var(--text-faint)); opacity: 0.75; }
+    .ord-mini-stat--care { --mini-color: var(--care-base); }
+    .ord-mini-stat--attention { --mini-color: var(--attention-base); }
+    .ord-mini-stat--regulatory { --mini-color: var(--regulatory-base); }
+    .ord-mini-stat__label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .ord-mini-stat__value { font-size: var(--fs-xl); font-weight: var(--fw-semibold); color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; line-height: 1.2; margin-top: 2px; }
+    .ord-mini-stat__meta { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* Toolbar */
+    .pac-toolbar { background: var(--surface); border: 0.5px solid var(--divider); border-radius: var(--radius-card); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4); display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+    .pac-search { flex: 1; min-width: 240px; position: relative; }
+    .pac-search__input { width: 100%; background: transparent; border: 0; outline: none; font-family: inherit; font-size: var(--fs-base); color: var(--text); padding: 6px 6px 6px 32px; }
+    .pac-search__input::placeholder { color: var(--text-faint); }
+    .pac-search__icon { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); color: var(--text-faint); }
+    .pac-toolbar__divider { width: 0.5px; height: 22px; background: var(--divider-strong); }
+    .pac-filter { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--radius-pill); background: var(--sidebar); color: var(--text); font-size: var(--fs-sm); font-weight: var(--fw-medium); border: 0; cursor: pointer; transition: background var(--duration-fast) var(--ease-out); }
+    .pac-filter:hover { background: var(--divider-strong); }
+    .pac-filter--active { background: var(--brand); color: #FFF7EE; }
+    .pac-filter--active:hover { background: var(--brand-strong); }
+    .pac-filter__count { font-size: var(--fs-xs); opacity: 0.7; font-variant-numeric: tabular-nums; }
+
+    /* TABELA */
+    .pac-table-wrap { background: var(--surface); border-radius: var(--radius-card); border: 0.5px solid var(--divider); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .pac-table { width: 100%; border-collapse: collapse; font-size: var(--fs-base); }
+    .pac-table thead th { text-align: left; font-weight: var(--fw-semibold); letter-spacing: 0.06em; text-transform: uppercase; font-size: var(--fs-sm); color: var(--text-muted); padding: var(--space-4); border-bottom: 0.5px solid var(--divider); white-space: nowrap; }
+    .pac-table tbody td { padding: var(--space-4); border-bottom: 0.5px solid var(--divider); vertical-align: middle; }
+    .pac-table tbody tr:last-child td { border-bottom: 0; }
+    .pac-table tbody tr { transition: background var(--duration-fast) var(--ease-out); cursor: pointer; }
+    .pac-table tbody tr:hover { background: rgba(45, 35, 29, 0.03); }
+    [data-theme="dark"] .pac-table tbody tr:hover { background: rgba(241, 230, 214, 0.04); }
+    .pac-table .col-actions { width: 64px; text-align: right; }
+    .pac-table .tabular { font-variant-numeric: tabular-nums; }
+
+    .pac-name { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+    .pac-name__meta { display: flex; flex-direction: column; min-width: 0; }
+    .pac-name__primary { font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: var(--fs-md); letter-spacing: -0.005em; }
+    .pac-name__secondary { font-size: var(--fs-sm); color: var(--text-muted); font-variant-numeric: tabular-nums; margin-top: 2px; }
+
+    .pac-actions { display: inline-flex; align-items: center; gap: 2px; justify-content: flex-end; }
+    .pac-actions__btn { width: 30px; height: 30px; border-radius: var(--radius-pill); background: transparent; color: var(--text-muted); border: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+    .pac-actions__btn:hover { background: var(--divider); color: var(--text); }
+
+    /* Rota origem → destino */
+    .log-route { display: flex; align-items: center; gap: var(--space-2); font-size: var(--fs-sm); color: var(--text); white-space: nowrap; }
+    .log-route__pt { display: flex; flex-direction: column; }
+    .log-route__city { font-weight: var(--fw-medium); }
+    .log-route__country { font-size: var(--fs-xs); color: var(--text-faint); }
+    .log-route__arrow { color: var(--text-faint); }
+
+    .log-carrier { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-sm); color: var(--text); }
+    .log-carrier__dot { width: 18px; height: 18px; border-radius: 5px; background: var(--sidebar); color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+
+    .log-eta { display: flex; flex-direction: column; gap: 1px; }
+    .log-eta__date { font-variant-numeric: tabular-nums; color: var(--text); }
+    .log-eta__rel { font-size: var(--fs-xs); color: var(--text-muted); }
+    .log-eta__rel--warn { color: var(--attention-base); font-weight: var(--fw-medium); }
+
+    /* View toggle (Kanban ↔ Tabela) */
+    .pac-view-toggle { display: inline-flex; background: var(--sidebar); border-radius: var(--radius-pill); padding: 3px; gap: 2px; margin-left: auto; }
+    .pac-view-toggle__btn { width: 30px; height: 28px; border-radius: var(--radius-pill); background: transparent; border: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+    .pac-view-toggle__btn[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+
+    /* Mostra/esconde view */
+    .dash-content[data-view="kanban"] .pac-table-wrap { display: none; }
+    .dash-content[data-view="table"] .log-board { display: none; }
+
+    /* KANBAN BOARD */
+    .log-board { display: flex; gap: var(--space-3); overflow-x: auto; padding-bottom: var(--space-2); align-items: flex-start; }
+    .log-col { flex: 1 1 200px; min-width: 188px; display: flex; flex-direction: column; gap: var(--space-3); }
+    .log-col__head { display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-2); }
+    .log-col__dot { width: 8px; height: 8px; border-radius: var(--radius-pill); background: var(--col-color, var(--text-faint)); flex: none; }
+    .log-col--regulatory { --col-color: var(--regulatory-base); }
+    .log-col--attention { --col-color: var(--attention-base); }
+    .log-col--care { --col-color: var(--care-base); }
+    .log-col__title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+    .log-col__count { margin-left: auto; font-size: var(--fs-xs); font-weight: var(--fw-semibold); color: var(--text-faint); font-variant-numeric: tabular-nums; }
+    .log-col__body { display: flex; flex-direction: column; gap: var(--space-3); background: rgba(45, 35, 29, 0.025); border-radius: 14px; padding: var(--space-3); min-height: 72px; }
+    [data-theme="dark"] .log-col__body { background: rgba(241, 230, 214, 0.03); }
+
+    .log-card { background: var(--surface); border: 0.5px solid var(--divider); border-radius: var(--radius-card); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); cursor: pointer; position: relative; overflow: hidden; transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out); }
+    .log-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .log-card::before { content: ""; position: absolute; top: 0; left: 0; bottom: 0; width: 3px; background: var(--card-color, var(--text-faint)); opacity: 0.8; }
+    .log-card--regulatory { --card-color: var(--regulatory-base); }
+    .log-card--attention { --card-color: var(--attention-base); }
+    .log-card--care { --card-color: var(--care-base); }
+    .log-card__top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+    .log-card__id { font-size: var(--fs-sm); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; color: var(--text); }
+    .log-card__eta { font-size: var(--fs-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .log-card__eta--warn { color: var(--attention-base); font-weight: var(--fw-semibold); }
+    .log-card__patient { display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
+    .log-card__name { font-size: var(--fs-sm); font-weight: var(--fw-medium); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .log-card__route { display: flex; align-items: center; gap: 6px; font-size: var(--fs-xs); color: var(--text-muted); }
+    .log-card__route svg { color: var(--text-faint); flex: none; }
+    .log-card__flag { display: inline-flex; align-items: center; gap: 5px; font-size: var(--fs-xs); font-weight: var(--fw-semibold); color: var(--attention-base); margin-top: 2px; }
+
+    @media (max-width: 1100px) { .log-col-carrier { display: none; } }
+    @media (max-width: 960px) { .dash-shell { grid-template-columns: 1fr; } .dash-sidebar { display: none; } }
+    @media (max-width: 880px) { .ord-mini-stats { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <div class="dash-shell">
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar">
+      <div class="dash-brand"><h1 class="dash-brand__wordmark">lumi</h1></div>
+      <nav class="dash-nav" aria-label="Navegação principal">
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Operação</span>
+          <a class="dash-nav__link" href="dashboard.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>Início</a>
+          <a class="dash-nav__link" href="pacientes.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pacientes<span class="dash-nav__badge">47</span></a>
+          <a class="dash-nav__link" href="pedidos.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>Pedidos<span class="dash-nav__badge">12</span></a>
+          <a class="dash-nav__link" href="financeiro.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Financeiro<span class="dash-nav__badge">5</span></a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Atendimento</a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Relatórios</a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Regulatório</span>
+          <a class="dash-nav__link" href="anvisa.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Anvisa<span class="dash-nav__badge">3</span></a>
+          <a class="dash-nav__link" href="logistica.html" aria-current="page"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Logística<span class="dash-nav__badge">4</span></a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Sistema</span>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</a>
+        </div>
+      </nav>
+      <div class="dash-sidebar__footer">
+        <span class="avatar avatar--care">EM</span>
+        <div class="dash-user-meta">
+          <span class="dash-user-name">Emília Mendes</span>
+          <span class="dash-user-role">Admin · Setty</span>
+        </div>
+        <button class="pac-actions__btn" aria-label="Sair"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="dash-main">
+      <header class="dash-topbar">
+        <div class="inline" style="gap: var(--space-3); font-size: var(--fs-sm);">
+          <a href="dashboard.html" style="color: var(--text-muted); text-decoration: none;">Início</a>
+          <span style="color: var(--text-faint);">/</span>
+          <span class="dash-topbar__title">Logística</span>
+        </div>
+        <div class="dash-topbar__actions">
+          <button class="icon-btn" aria-label="Notificações" style="position: relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="status-dot status-dot--attention" style="position: absolute; top: 7px; right: 7px; width: 7px; height: 7px;"></span></button>
+          <div class="theme-toggle" role="group" aria-label="Tema">
+            <button class="theme-toggle__opt" data-theme-set="light" aria-pressed="true" aria-label="Tema claro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg></button>
+            <button class="theme-toggle__opt" data-theme-set="dark" aria-pressed="false" aria-label="Tema escuro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dash-content" data-view="kanban">
+        <!-- Header da página -->
+        <section class="ord-header reveal">
+          <div>
+            <h1 class="ord-header__title">Logística <span class="ord-header__count tabular">7 envios ativos</span></h1>
+            <p class="text-muted" style="font-size: var(--fs-sm); margin: 2px 0 0;">Torre de controle dos envios internacionais · transportadora Memphis · Paraguai → Brasil.</p>
+          </div>
+          <div class="ord-header__actions">
+            <button class="btn btn--secondary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Exportar CSV
+            </button>
+            <button class="btn btn--primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Rastrear código
+            </button>
+          </div>
+        </section>
+
+        <!-- Alerta: envio parado na fiscalização -->
+        <section class="log-alert reveal" role="status">
+          <span class="log-alert__icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+          <div class="log-alert__body">
+            <span class="log-alert__title">1 envio parado na fiscalização Anvisa</span>
+            <span class="log-alert__desc"><span class="tabular">#BR2929004</span> · Pedro Henrique Dias · retido em Foz do Iguaçu há 4 dias — acima do SLA de 48h. Acionar despachante.</span>
+          </div>
+          <button class="btn btn--secondary btn--sm">Ver envio</button>
+        </section>
+
+        <!-- Mini stats -->
+        <section class="ord-mini-stats reveal" aria-label="Resumo logístico">
+          <article class="ord-mini-stat ord-mini-stat--regulatory">
+            <div class="ord-mini-stat__label">Em trânsito</div>
+            <div class="ord-mini-stat__value tabular">4</div>
+            <div class="ord-mini-stat__meta">Memphis · PY → BR</div>
+          </article>
+          <article class="ord-mini-stat ord-mini-stat--attention">
+            <div class="ord-mini-stat__label">Fiscalização Anvisa</div>
+            <div class="ord-mini-stat__value tabular">2</div>
+            <div class="ord-mini-stat__meta">Foz do Iguaçu · PR</div>
+          </article>
+          <article class="ord-mini-stat ord-mini-stat--attention">
+            <div class="ord-mini-stat__label">Parados / atrasados</div>
+            <div class="ord-mini-stat__value tabular">1</div>
+            <div class="ord-mini-stat__meta">acima do SLA de 48h</div>
+          </article>
+          <article class="ord-mini-stat ord-mini-stat--care">
+            <div class="ord-mini-stat__label">Entregues no mês</div>
+            <div class="ord-mini-stat__value tabular">24</div>
+            <div class="ord-mini-stat__meta">prazo médio 9 dias</div>
+          </article>
+        </section>
+
+        <!-- Toolbar -->
+        <section class="pac-toolbar reveal">
+          <div class="pac-search">
+            <span class="pac-search__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input class="pac-search__input" type="search" placeholder="Buscar por tracking, paciente, cidade…" />
+          </div>
+          <span class="pac-toolbar__divider" aria-hidden="true"></span>
+          <button class="pac-filter pac-filter--active">Todos <span class="pac-filter__count">7</span></button>
+          <button class="pac-filter">Embalado <span class="pac-filter__count">1</span></button>
+          <button class="pac-filter">Em trânsito <span class="pac-filter__count">2</span></button>
+          <button class="pac-filter">Fiscalização <span class="pac-filter__count">2</span></button>
+          <button class="pac-filter">Saiu p/ entrega <span class="pac-filter__count">1</span></button>
+          <button class="pac-filter">Entregue <span class="pac-filter__count">1</span></button>
+
+          <div class="pac-view-toggle" role="group" aria-label="Modo de visualização">
+            <button class="pac-view-toggle__btn" data-view="kanban" aria-pressed="true" aria-label="Visualizar como kanban">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </button>
+            <button class="pac-view-toggle__btn" data-view="table" aria-pressed="false" aria-label="Visualizar como tabela">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- KANBAN -->
+        <section class="log-board reveal" aria-label="Envios por estágio">
+
+          <!-- Col: Embalado -->
+          <div class="log-col log-col--regulatory">
+            <div class="log-col__head">
+              <span class="log-col__dot"></span>
+              <span class="log-col__title">Embalado</span>
+              <span class="log-col__count">1</span>
+            </div>
+            <div class="log-col__body">
+              <article class="log-card log-card--regulatory" onclick="location.href='logistica-detalhe.html'">
+                <div class="log-card__top"><span class="log-card__id">#BR2941133</span><span class="log-card__eta">12 jun</span></div>
+                <div class="log-card__patient"><span class="avatar avatar--sm avatar--attention">RC</span><span class="log-card__name">Rafael Castro</span></div>
+                <div class="log-card__route"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Assunção → Belo Horizonte</div>
+                <span class="log-card__flag" style="color: var(--text-faint); font-weight: var(--fw-medium);">aguardando coleta</span>
+              </article>
+            </div>
+          </div>
+
+          <!-- Col: Em trânsito -->
+          <div class="log-col log-col--regulatory">
+            <div class="log-col__head">
+              <span class="log-col__dot"></span>
+              <span class="log-col__title">Em trânsito</span>
+              <span class="log-col__count">2</span>
+            </div>
+            <div class="log-col__body">
+              <article class="log-card log-card--regulatory" onclick="location.href='logistica-detalhe.html'">
+                <div class="log-card__top"><span class="log-card__id">#BR2938221</span><span class="log-card__eta">09 jun</span></div>
+                <div class="log-card__patient"><span class="avatar avatar--sm avatar--care">LM</span><span class="log-card__name">Lucia Mendonça</span></div>
+                <div class="log-card__route"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Assunção → Rio de Janeiro</div>
+                <span class="log-card__flag" style="color: var(--text-faint); font-weight: var(--fw-medium);">rumo a Foz</span>
+              </article>
+              <article class="log-card log-card--regulatory" onclick="location.href='logistica-detalhe.html'">
+                <div class="log-card__top"><span class="log-card__id">#BR2939120</span><span class="log-card__eta">10 jun</span></div>
+                <div class="log-card__patient"><span class="avatar avatar--sm avatar--regulatory">JA</span><span class="log-card__name">João Pedro Almeida</span></div>
+                <div class="log-card__route"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Assunção → Salvador</div>
+                <span class="log-card__flag" style="color: var(--text-faint); font-weight: var(--fw-medium);">rumo a Foz</span>
+              </article>
+            </div>
+          </div>
+
+          <!-- Col: Fiscalização Anvisa -->
+          <div class="log-col log-col--attention">
+            <div class="log-col__head">
+              <span class="log-col__dot"></span>
+              <span class="log-col__title">Fiscalização Anvisa</span>
+              <span class="log-col__count">2</span>
+            </div>
+            <div class="log-col__body">
+              <article class="log-card log-card--attention" onclick="location.href='logistica-detalhe.html'">
+                <div class="log-card__top"><span class="log-card__id">#BR2929004</span><span class="log-card__eta log-card__eta--warn">atrasado</span></div>
+                <div class="log-card__patient"><span class="avatar avatar--sm avatar--regulatory">PD</span><span class="log-card__name">Pedro Henrique Dias</span></div>
+                <div class="log-card__route"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Assunção → Curitiba</div>
+                <span class="log-card__flag"><span class="status-dot status-dot--attention status-dot--pulse"></span>parado há 4 dias em Foz</span>
+              </article>
+              <article class="log-card log-card--attention" onclick="location.href='logistica-detalhe.html'">
+                <div class="log-card__top"><span class="log-card__id">#BR2934118</span><span class="log-card__eta">06 jun</span></div>
+                <div class="log-card__patient"><span class="avatar avatar--sm avatar--attention">MF</span><span class="log-card__name">Maria Fernanda Costa</span></div>
+                <div class="log-card__route"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Assunção → São Paulo</div>
+                <span class="log-card__flag" style="color: var(--text-faint); font-weight: var(--fw-medium);">em Foz desde 06 mai</span>
+              </article>
+            </div>
+          </div>
+
+          <!-- Col: Saiu para entrega -->
+          <div class="log-col log-col--regulatory">
+            <div class="log-col__head">
+              <span class="log-col__dot"></span>
+              <span class="log-col__title">Saiu p/ entrega</span>
+              <span class="log-col__count">1</span>
+            </div>
+            <div class="log-col__body">
+              <article class="log-card log-card--regulatory" onclick="location.href='logistica-detalhe.html'">
+                <div class="log-card__top"><span class="log-card__id">#BR2931550</span><span class="log-card__eta">hoje</span></div>
+                <div class="log-card__patient"><span class="avatar avatar--sm avatar--regulatory">CH</span><span class="log-card__name">Carlos Henrique Silva</span></div>
+                <div class="log-card__route"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Assunção → Belo Horizonte</div>
+                <span class="log-card__flag" style="color: var(--text-faint); font-weight: var(--fw-medium);">saiu às 08h12</span>
+              </article>
+            </div>
+          </div>
+
+          <!-- Col: Entregue -->
+          <div class="log-col log-col--care">
+            <div class="log-col__head">
+              <span class="log-col__dot"></span>
+              <span class="log-col__title">Entregue</span>
+              <span class="log-col__count">1</span>
+            </div>
+            <div class="log-col__body">
+              <article class="log-card log-card--care" onclick="location.href='logistica-detalhe.html'">
+                <div class="log-card__top"><span class="log-card__id">#BR2918734</span><span class="log-card__eta">06 mai</span></div>
+                <div class="log-card__patient"><span class="avatar avatar--sm avatar--care">BS</span><span class="log-card__name">Beatriz Souza</span></div>
+                <div class="log-card__route"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Assunção → Curitiba</div>
+                <span class="log-card__flag" style="color: var(--care-base);"><span class="status-dot status-dot--care"></span>entregue · há 4 dias</span>
+              </article>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- TABELA -->
+        <section class="pac-table-wrap reveal" aria-label="Envios">
+          <table class="pac-table">
+            <thead>
+              <tr>
+                <th>Tracking</th>
+                <th>Paciente</th>
+                <th>Rota</th>
+                <th>Estágio</th>
+                <th class="log-col-carrier">Transportadora</th>
+                <th>Previsão</th>
+                <th class="col-actions">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Parado / atrasado -->
+              <tr onclick="location.href='logistica-detalhe.html'">
+                <td class="tabular">#BR2929004</td>
+                <td><div class="pac-name"><span class="avatar avatar--sm avatar--regulatory">PD</span><div class="pac-name__meta"><span class="pac-name__primary">Pedro Henrique Dias</span><span class="pac-name__secondary">#PED2929004</span></div></div></td>
+                <td><div class="log-route"><div class="log-route__pt"><span class="log-route__city">Assunção</span><span class="log-route__country">PY</span></div><span class="log-route__arrow">→</span><div class="log-route__pt"><span class="log-route__city">Curitiba</span><span class="log-route__country">BR</span></div></div></td>
+                <td><span class="badge badge--attention"><span class="status-dot status-dot--attention status-dot--pulse"></span>Parado · fiscalização</span></td>
+                <td class="log-col-carrier"><span class="log-carrier"><span class="log-carrier__dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Memphis</span></td>
+                <td><div class="log-eta"><span class="log-eta__date tabular">atrasado</span><span class="log-eta__rel log-eta__rel--warn">há 4 dias em Foz</span></div></td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+
+              <!-- Em fiscalização (Maria Fernanda — consistente com pedido-detalhe) -->
+              <tr onclick="location.href='logistica-detalhe.html'">
+                <td class="tabular">#BR2934118</td>
+                <td><div class="pac-name"><span class="avatar avatar--sm avatar--attention">MF</span><div class="pac-name__meta"><span class="pac-name__primary">Maria Fernanda Costa</span><span class="pac-name__secondary">#PED2934118</span></div></div></td>
+                <td><div class="log-route"><div class="log-route__pt"><span class="log-route__city">Assunção</span><span class="log-route__country">PY</span></div><span class="log-route__arrow">→</span><div class="log-route__pt"><span class="log-route__city">São Paulo</span><span class="log-route__country">BR</span></div></div></td>
+                <td><span class="badge badge--attention"><span class="status-dot status-dot--attention"></span>Fiscalização Anvisa</span></td>
+                <td class="log-col-carrier"><span class="log-carrier"><span class="log-carrier__dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Memphis</span></td>
+                <td><div class="log-eta"><span class="log-eta__date tabular">06 jun 2026</span><span class="log-eta__rel">em Foz desde 06 mai</span></div></td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+
+              <!-- Em trânsito -->
+              <tr onclick="location.href='logistica-detalhe.html'">
+                <td class="tabular">#BR2938221</td>
+                <td><div class="pac-name"><span class="avatar avatar--sm avatar--care">LM</span><div class="pac-name__meta"><span class="pac-name__primary">Lucia Mendonça</span><span class="pac-name__secondary">#PED2938221</span></div></div></td>
+                <td><div class="log-route"><div class="log-route__pt"><span class="log-route__city">Assunção</span><span class="log-route__country">PY</span></div><span class="log-route__arrow">→</span><div class="log-route__pt"><span class="log-route__city">Rio de Janeiro</span><span class="log-route__country">BR</span></div></div></td>
+                <td><span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Em trânsito</span></td>
+                <td class="log-col-carrier"><span class="log-carrier"><span class="log-carrier__dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Memphis</span></td>
+                <td><div class="log-eta"><span class="log-eta__date tabular">09 jun 2026</span><span class="log-eta__rel">rumo a Foz</span></div></td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+
+              <!-- Em trânsito (2) -->
+              <tr onclick="location.href='logistica-detalhe.html'">
+                <td class="tabular">#BR2939120</td>
+                <td><div class="pac-name"><span class="avatar avatar--sm avatar--regulatory">JA</span><div class="pac-name__meta"><span class="pac-name__primary">João Pedro Almeida</span><span class="pac-name__secondary">#PED2939120</span></div></div></td>
+                <td><div class="log-route"><div class="log-route__pt"><span class="log-route__city">Assunção</span><span class="log-route__country">PY</span></div><span class="log-route__arrow">→</span><div class="log-route__pt"><span class="log-route__city">Salvador</span><span class="log-route__country">BR</span></div></div></td>
+                <td><span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Em trânsito</span></td>
+                <td class="log-col-carrier"><span class="log-carrier"><span class="log-carrier__dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Memphis</span></td>
+                <td><div class="log-eta"><span class="log-eta__date tabular">10 jun 2026</span><span class="log-eta__rel">rumo a Foz</span></div></td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+
+              <!-- Saiu para entrega -->
+              <tr onclick="location.href='logistica-detalhe.html'">
+                <td class="tabular">#BR2931550</td>
+                <td><div class="pac-name"><span class="avatar avatar--sm avatar--regulatory">CH</span><div class="pac-name__meta"><span class="pac-name__primary">Carlos Henrique Silva</span><span class="pac-name__secondary">#PED2931550</span></div></div></td>
+                <td><div class="log-route"><div class="log-route__pt"><span class="log-route__city">Assunção</span><span class="log-route__country">PY</span></div><span class="log-route__arrow">→</span><div class="log-route__pt"><span class="log-route__city">Belo Horizonte</span><span class="log-route__country">BR</span></div></div></td>
+                <td><span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Saiu p/ entrega</span></td>
+                <td class="log-col-carrier"><span class="log-carrier"><span class="log-carrier__dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Memphis</span></td>
+                <td><div class="log-eta"><span class="log-eta__date tabular">hoje</span><span class="log-eta__rel">saiu às 08h12</span></div></td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+
+              <!-- Embalado -->
+              <tr onclick="location.href='logistica-detalhe.html'">
+                <td class="tabular">#BR2941133</td>
+                <td><div class="pac-name"><span class="avatar avatar--sm avatar--attention">RC</span><div class="pac-name__meta"><span class="pac-name__primary">Rafael Castro</span><span class="pac-name__secondary">#PED2941133</span></div></div></td>
+                <td><div class="log-route"><div class="log-route__pt"><span class="log-route__city">Assunção</span><span class="log-route__country">PY</span></div><span class="log-route__arrow">→</span><div class="log-route__pt"><span class="log-route__city">Belo Horizonte</span><span class="log-route__country">BR</span></div></div></td>
+                <td><span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Embalado · CD Assunção</span></td>
+                <td class="log-col-carrier"><span class="log-carrier"><span class="log-carrier__dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Memphis</span></td>
+                <td><div class="log-eta"><span class="log-eta__date tabular">12 jun 2026</span><span class="log-eta__rel">aguardando coleta</span></div></td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+
+              <!-- Entregue -->
+              <tr onclick="location.href='logistica-detalhe.html'">
+                <td class="tabular">#BR2918734</td>
+                <td><div class="pac-name"><span class="avatar avatar--sm avatar--care">BS</span><div class="pac-name__meta"><span class="pac-name__primary">Beatriz Souza</span><span class="pac-name__secondary">#PED2918734</span></div></div></td>
+                <td><div class="log-route"><div class="log-route__pt"><span class="log-route__city">Assunção</span><span class="log-route__country">PY</span></div><span class="log-route__arrow">→</span><div class="log-route__pt"><span class="log-route__city">Curitiba</span><span class="log-route__country">BR</span></div></div></td>
+                <td><span class="badge badge--care"><span class="status-dot status-dot--care"></span>Entregue</span></td>
+                <td class="log-col-carrier"><span class="log-carrier"><span class="log-carrier__dot"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>Memphis</span></td>
+                <td><div class="log-eta"><span class="log-eta__date tabular">06 mai 2026</span><span class="log-eta__rel">entregue · há 4 dias</span></div></td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Comprovante" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const opts = document.querySelectorAll(".theme-toggle__opt");
+    const apply = (mode) => {
+      root.setAttribute("data-theme", mode);
+      opts.forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === mode ? "true" : "false"));
+      try { localStorage.setItem("d10-theme", mode); } catch (_) {}
+    };
+    opts.forEach((b) => b.addEventListener("click", () => apply(b.dataset.themeSet)));
+    try {
+      const saved = localStorage.getItem("d10-theme");
+      if (saved === "light" || saved === "dark") apply(saved);
+    } catch (_) {}
+
+    const filters = document.querySelectorAll(".pac-filter");
+    filters.forEach((f) => f.addEventListener("click", () => {
+      filters.forEach((x) => x.classList.remove("pac-filter--active"));
+      f.classList.add("pac-filter--active");
+    }));
+
+    // View toggle Kanban ↔ Tabela
+    const content = document.querySelector(".dash-content");
+    const viewBtns = document.querySelectorAll(".pac-view-toggle__btn");
+    const applyView = (view) => {
+      content.setAttribute("data-view", view);
+      viewBtns.forEach((b) => b.setAttribute("aria-pressed", b.dataset.view === view ? "true" : "false"));
+      try { localStorage.setItem("lumi-log-view", view); } catch (_) {}
+    };
+    viewBtns.forEach((b) => b.addEventListener("click", () => applyView(b.dataset.view)));
+    try {
+      const savedView = localStorage.getItem("lumi-log-view");
+      if (savedView === "kanban" || savedView === "table") applyView(savedView);
+    } catch (_) {}
+  </script>
+</body>
+</html>

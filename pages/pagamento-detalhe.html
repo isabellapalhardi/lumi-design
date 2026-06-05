@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cobrança #BR2941133 · lumi</title>
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <style>
+    html { margin: 0; padding: 0; background: var(--brand); }
+    body {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: 0;
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      background: var(--brand);
+      overflow: hidden;
+    }
+    .dash-shell {
+      flex: 1;
+      height: 100%;
+      align-self: stretch;
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px -28px rgba(45, 35, 29, 0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.30), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.20), transparent 65%),
+        rgba(236, 224, 204, 0.88);
+    }
+    [data-theme="dark"] .dash-shell {
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.22), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.16), transparent 65%),
+        rgba(34, 28, 24, 0.96);
+    }
+
+    /* SIDEBAR */
+    .dash-sidebar { padding: var(--space-5) var(--space-4) var(--space-4); display: flex; flex-direction: column; gap: var(--space-6); border-right: 0.5px solid var(--divider); overflow-y: auto; background: transparent; }
+    .dash-brand { padding: 0 var(--space-3); }
+    .dash-brand__wordmark { font-family: var(--font-serif); font-weight: 500; font-size: 34px; letter-spacing: -0.02em; line-height: 1; color: var(--brand); font-optical-sizing: auto; margin: 0; }
+    .dash-nav { display: flex; flex-direction: column; gap: var(--space-5); }
+    .dash-nav__group { display: flex; flex-direction: column; gap: 2px; }
+    .dash-nav__group-title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); padding: 0 var(--space-3); margin-bottom: var(--space-2); }
+    .dash-nav__link { display: flex; align-items: center; gap: var(--space-3); padding: 8px var(--space-3); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--fs-base); font-weight: var(--fw-medium); cursor: pointer; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); text-decoration: none; position: relative; }
+    .dash-nav__link:hover { background: rgba(45, 35, 29, 0.05); color: var(--text); text-decoration: none; }
+    [data-theme="dark"] .dash-nav__link:hover { background: rgba(241, 230, 214, 0.05); }
+    .dash-nav__link[aria-current="page"] { background: var(--brand); color: #FFF7EE; }
+    .dash-nav__link[aria-current="page"]:hover { background: var(--brand-strong); }
+    .dash-nav__icon { width: 18px; height: 18px; flex: none; }
+    .dash-nav__badge { margin-left: auto; font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 1px 6px; border-radius: var(--radius-pill); background: var(--attention-fill); color: var(--attention-base); }
+    .dash-nav__link[aria-current="page"] .dash-nav__badge { background: rgba(255, 247, 238, 0.22); color: #FFF7EE; }
+    .dash-sidebar__footer { margin-top: auto; padding: var(--space-3); display: flex; align-items: center; gap: var(--space-3); border-top: 0.5px solid var(--divider); padding-top: var(--space-4); }
+    .dash-user-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .dash-user-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dash-user-role { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* MAIN */
+    .dash-main { display: flex; flex-direction: column; overflow: hidden; min-width: 0; min-height: 0; }
+    .dash-topbar { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-6); border-bottom: 0.5px solid var(--divider); background: transparent; flex: none; }
+    .dash-topbar__title { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); }
+    .dash-topbar__actions { display: flex; align-items: center; gap: var(--space-3); }
+
+    .dash-content {
+      flex: 1; overflow-y: auto; min-height: 0;
+      padding: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: var(--space-5);
+      align-items: start;
+    }
+    @media (max-width: 1100px) { .dash-content { grid-template-columns: 1fr; } }
+
+    .icon-btn { width: 36px; height: 36px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; justify-content: center; background: transparent; color: var(--text-muted); border: 0; cursor: pointer; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+    .icon-btn:hover { background: var(--divider); color: var(--text); }
+
+    /* ────────── ORDER HEADER ────────── */
+    .order-header {
+      grid-column: 1 / -1;
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      border: 0.5px solid var(--divider);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-5);
+      display: flex; align-items: center; gap: var(--space-5);
+    }
+    .order-header__id { font-family: var(--font-sans); font-size: var(--fs-2xl); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; color: var(--text); line-height: 1; }
+    .order-header__meta { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+    .order-header__badges { display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+    .order-header__date { font-size: var(--fs-sm); color: var(--text-muted); }
+    .order-header__price { font-size: var(--fs-xl); font-weight: var(--fw-semibold); font-variant-numeric: tabular-nums; color: var(--text); flex: none; }
+    .order-header__actions { display: flex; align-items: center; gap: var(--space-2); flex: none; }
+
+    /* ────────── STAGE HERO ────────── */
+    .stage-hero {
+      grid-column: 1 / -1;
+      background:
+        linear-gradient(120deg, rgba(201, 152, 83, 0.14) 0%, rgba(201, 152, 83, 0) 60%),
+        var(--surface);
+      border-radius: var(--radius-card);
+      border: 0.5px solid var(--divider);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-5);
+      display: flex; align-items: center; gap: var(--space-5);
+    }
+    .stage-hero__icon { width: 64px; height: 64px; border-radius: var(--radius-pill); background: var(--attention-fill); color: var(--attention-base); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+    .stage-hero__body { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+    .stage-hero__label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+    .stage-hero__title { font-size: var(--fs-xl); font-weight: var(--fw-semibold); letter-spacing: -0.01em; margin: 0; }
+    .stage-hero__sub { font-size: var(--fs-sm); color: var(--text-muted); }
+    .stage-hero__progress { display: flex; flex-direction: column; gap: 6px; min-width: 200px; }
+    .stage-hero__progress-label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .stage-hero__progress-bar { height: 6px; background: var(--divider); border-radius: var(--radius-pill); overflow: hidden; position: relative; }
+    .stage-hero__progress-fill { height: 100%; background: var(--attention-base); border-radius: var(--radius-pill); }
+    .stage-hero__progress-meta { display: flex; justify-content: space-between; font-size: var(--fs-xs); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+
+    /* ────────── GENERIC CARD ────────── */
+    .pay-card {
+      background: var(--surface);
+      border-radius: var(--radius-card);
+      border: 0.5px solid var(--divider);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-5);
+    }
+    .pay-card__header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-5); }
+    .pay-card__title { font-size: var(--fs-lg); font-weight: var(--fw-semibold); letter-spacing: -0.01em; margin: 0; }
+    .pay-card__sub { font-size: var(--fs-sm); color: var(--text-muted); margin: 2px 0 0; }
+
+    .main-col { display: flex; flex-direction: column; gap: var(--space-5); min-width: 0; }
+
+    /* Provider link */
+    .pay-link {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: rgba(45, 35, 29, 0.03);
+      border-radius: 12px;
+      border: 0.5px solid var(--divider);
+      margin-bottom: var(--space-5);
+    }
+    [data-theme="dark"] .pay-link { background: rgba(241, 230, 214, 0.04); }
+    .pay-link__logo { width: 32px; height: 32px; border-radius: 8px; background: var(--regulatory-fill); color: var(--regulatory-base); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+    .pay-link__meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+    .pay-link__label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+    .pay-link__url { font-size: var(--fs-sm); color: var(--text); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* Method tabs */
+    .pay-methods { display: flex; gap: var(--space-2); margin-bottom: var(--space-5); }
+    .pay-method {
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      padding: var(--space-4) var(--space-3);
+      border-radius: 12px;
+      border: 0.5px solid var(--divider);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: inherit; font-size: var(--fs-sm); font-weight: var(--fw-medium);
+      transition: border-color var(--duration-fast) var(--ease-out), background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+    .pay-method:hover { border-color: var(--text-faint); color: var(--text); }
+    .pay-method[aria-pressed="true"] { border-color: var(--brand); background: rgba(196, 104, 80, 0.06); color: var(--text); }
+    .pay-method__tag { font-size: var(--fs-xs); color: var(--text-faint); }
+
+    /* PIX panel */
+    .pix-panel { display: flex; gap: var(--space-5); align-items: center; }
+    .pix-qr {
+      width: 148px; height: 148px; border-radius: 14px; flex: none;
+      background: #FFF7EE;
+      border: 0.5px solid var(--divider);
+      display: grid; grid-template-columns: repeat(11, 1fr); grid-template-rows: repeat(11, 1fr);
+      padding: 12px; gap: 1px;
+    }
+    .pix-qr span { background: #2D231D; border-radius: 1px; }
+    .pix-qr span.off { background: transparent; }
+    .pix-info { flex: 1; display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; }
+    .pix-copy {
+      display: flex; align-items: center; gap: var(--space-2);
+      padding: 10px var(--space-3);
+      background: rgba(45, 35, 29, 0.03);
+      border-radius: 10px; border: 0.5px solid var(--divider);
+      font-size: var(--fs-sm); color: var(--text-muted); font-variant-numeric: tabular-nums;
+    }
+    [data-theme="dark"] .pix-copy { background: rgba(241, 230, 214, 0.04); }
+    .pix-copy__code { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* ────────── TIMELINE ────────── */
+    .timeline { display: flex; flex-direction: column; gap: 0; position: relative; }
+    .timeline-step { display: grid; grid-template-columns: 36px 1fr; gap: var(--space-4); padding-bottom: var(--space-5); position: relative; }
+    .timeline-step:last-child { padding-bottom: 0; }
+    .timeline-step:not(:last-child)::before { content: ""; position: absolute; left: 17px; top: 36px; bottom: 0; width: 1.5px; background: var(--divider); z-index: 0; }
+    .timeline-step--done::before { background: var(--care-base); opacity: 0.4; }
+    .timeline-step__dot { width: 36px; height: 36px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; justify-content: center; background: var(--sidebar); color: var(--text-faint); flex: none; position: relative; z-index: 1; }
+    .timeline-step--done .timeline-step__dot { background: var(--care-fill); color: var(--care-base); }
+    .timeline-step--current .timeline-step__dot { background: var(--attention-fill); color: var(--attention-base); box-shadow: 0 0 0 4px rgba(201, 152, 83, 0.14); }
+    .timeline-step__content { display: flex; flex-direction: column; gap: 4px; padding-bottom: var(--space-2); }
+    .timeline-step__title { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); letter-spacing: -0.005em; }
+    .timeline-step--pending .timeline-step__title { color: var(--text-muted); font-weight: var(--fw-medium); }
+    .timeline-step__meta { display: flex; align-items: center; gap: var(--space-3); font-size: var(--fs-sm); color: var(--text-muted); flex-wrap: wrap; }
+    .timeline-step__meta-dot { color: var(--text-faint); }
+
+    /* ────────── SIDE COL ────────── */
+    .side-col { display: flex; flex-direction: column; gap: var(--space-4); }
+    .side-card { background: var(--surface); border-radius: var(--radius-card); border: 0.5px solid var(--divider); box-shadow: var(--shadow-sm); padding: var(--space-5); display: flex; flex-direction: column; gap: var(--space-3); }
+    .side-card__title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); padding-bottom: var(--space-3); border-bottom: 0.5px solid var(--divider); }
+    .side-patient { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; }
+    .side-patient__name { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--fs-md); }
+    .side-patient__cpf { font-size: var(--fs-sm); color: var(--text-muted); font-variant-numeric: tabular-nums; margin-top: 2px; }
+    .side-patient__contact { display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-sm); color: var(--text-muted); }
+    .side-patient__row { display: flex; align-items: center; gap: 8px; }
+
+    .side-line { display: flex; justify-content: space-between; font-size: var(--fs-sm); }
+    .side-line__label { color: var(--text-muted); }
+    .side-line__value { font-variant-numeric: tabular-nums; font-weight: var(--fw-medium); color: var(--text); }
+    .side-line--total { padding-top: var(--space-2); border-top: 0.5px solid var(--divider); margin-top: var(--space-2); }
+    .side-line--total .side-line__label { color: var(--text); font-weight: var(--fw-medium); }
+    .side-line--total .side-line__value { font-size: var(--fs-lg); font-weight: var(--fw-semibold); }
+
+    .side-kv { display: flex; justify-content: space-between; align-items: center; font-size: var(--fs-sm); }
+    .side-kv__label { color: var(--text-muted); }
+    .side-kv__value { color: var(--text); font-weight: var(--fw-medium); font-variant-numeric: tabular-nums; }
+
+    /* Botão gated */
+    .btn--block { width: 100%; }
+    .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+    .gate-note { font-size: var(--fs-xs); color: var(--text-muted); text-align: center; display: flex; align-items: center; justify-content: center; gap: 6px; }
+
+    @media (max-width: 960px) {
+      .dash-shell { grid-template-columns: 1fr; }
+      .dash-sidebar { display: none; }
+      .pix-panel { flex-direction: column; align-items: stretch; }
+      .pix-qr { align-self: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="dash-shell">
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar">
+      <div class="dash-brand"><h1 class="dash-brand__wordmark">lumi</h1></div>
+      <nav class="dash-nav" aria-label="Navegação principal">
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Operação</span>
+          <a class="dash-nav__link" href="dashboard.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>Início</a>
+          <a class="dash-nav__link" href="pacientes.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pacientes<span class="dash-nav__badge">47</span></a>
+          <a class="dash-nav__link" href="pedidos.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>Pedidos<span class="dash-nav__badge">12</span></a>
+          <a class="dash-nav__link" href="financeiro.html" aria-current="page"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Financeiro<span class="dash-nav__badge">5</span></a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Atendimento</a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Relatórios</a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Regulatório</span>
+          <a class="dash-nav__link" href="anvisa.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Anvisa<span class="dash-nav__badge">3</span></a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Logística</a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Sistema</span>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</a>
+        </div>
+      </nav>
+      <div class="dash-sidebar__footer">
+        <span class="avatar avatar--care">EM</span>
+        <div class="dash-user-meta">
+          <span class="dash-user-name">Emília Mendes</span>
+          <span class="dash-user-role">Admin · Setty</span>
+        </div>
+        <button class="icon-btn" aria-label="Sair"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="dash-main">
+      <header class="dash-topbar">
+        <div class="inline" style="gap: var(--space-3); font-size: var(--fs-sm);">
+          <a href="dashboard.html" style="color: var(--text-muted); text-decoration: none;">Início</a>
+          <span style="color: var(--text-faint);">/</span>
+          <a href="financeiro.html" style="color: var(--text-muted); text-decoration: none;">Financeiro</a>
+          <span style="color: var(--text-faint);">/</span>
+          <span class="dash-topbar__title tabular">#BR2941133</span>
+        </div>
+        <div class="dash-topbar__actions">
+          <button class="icon-btn" aria-label="Notificações" style="position: relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+          <div class="theme-toggle" role="group" aria-label="Tema">
+            <button class="theme-toggle__opt" data-theme-set="light" aria-pressed="true" aria-label="Tema claro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg></button>
+            <button class="theme-toggle__opt" data-theme-set="dark" aria-pressed="false" aria-label="Tema escuro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dash-content">
+        <!-- ORDER HEADER -->
+        <section class="order-header reveal">
+          <div class="order-header__meta">
+            <div class="order-header__badges">
+              <span class="order-header__id tabular">#BR2941133</span>
+              <span style="color: var(--text-faint); font-size: var(--fs-xl); font-weight: var(--fw-medium);">·</span>
+              <a href="paciente-detalhe.html" style="font-size: var(--fs-xl); font-weight: var(--fw-medium); letter-spacing: -0.01em; color: var(--text); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                <span class="avatar avatar--sm avatar--attention" style="width: 28px; height: 28px; font-size: 11px;">RC</span>
+                Rafael Castro
+              </a>
+              <span class="badge badge--attention"><span class="status-dot status-dot--attention status-dot--pulse"></span>Aguardando pagamento</span>
+            </div>
+            <span class="order-header__date">Cobrança gerada em 04 jun 2026 · link aberto pelo paciente há 22h</span>
+          </div>
+          <span class="order-header__price tabular">R$&nbsp;960,00</span>
+          <div class="order-header__actions">
+            <button class="btn btn--secondary btn--sm">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Reenviar link
+            </button>
+            <button class="icon-btn" aria-label="Mais ações"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+          </div>
+        </section>
+
+        <!-- STAGE HERO -->
+        <section class="stage-hero reveal">
+          <span class="stage-hero__icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          </span>
+          <div class="stage-hero__body">
+            <span class="stage-hero__label">Estágio atual · pagamento</span>
+            <h2 class="stage-hero__title">Aguardando pagamento</h2>
+            <span class="stage-hero__sub">Link Global Pace aberto pelo paciente · expira em 2 dias (06 jun) · sem confirmação de pagamento ainda</span>
+          </div>
+          <div class="stage-hero__progress">
+            <span class="stage-hero__progress-label">Estágio 4 de 6</span>
+            <div class="stage-hero__progress-bar"><span class="stage-hero__progress-fill" style="width: 58%;"></span></div>
+            <div class="stage-hero__progress-meta">
+              <span>Anvisa ok</span>
+              <span style="color: var(--text); font-weight: var(--fw-medium);">Próximo: logística</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- MAIN COL -->
+        <div class="main-col">
+          <!-- COBRANÇA -->
+          <section class="pay-card reveal">
+            <header class="pay-card__header">
+              <div>
+                <h2 class="pay-card__title">Cobrança</h2>
+                <p class="pay-card__sub">Link único gerado via Global Pace · conciliação por webhook</p>
+              </div>
+              <span class="badge badge--regulatory"><span class="status-dot status-dot--regulatory"></span>Link ativo</span>
+            </header>
+
+            <div class="pay-link">
+              <span class="pay-link__logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
+              <div class="pay-link__meta">
+                <span class="pay-link__label">Link de pagamento</span>
+                <span class="pay-link__url">pay.globalpace.com/c/BR2941133-9f2a</span>
+              </div>
+              <button class="btn btn--secondary btn--sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+              <button class="btn btn--primary btn--sm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>WhatsApp</button>
+            </div>
+
+            <div class="pay-methods" role="group" aria-label="Método escolhido pelo paciente">
+              <button class="pay-method" aria-pressed="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 22 12 12 22 2 12z"/></svg>
+                PIX
+                <span class="pay-method__tag">à vista</span>
+              </button>
+              <button class="pay-method" aria-pressed="false">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                Cartão
+                <span class="pay-method__tag">até 6×</span>
+              </button>
+              <button class="pay-method" aria-pressed="false">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="5" x2="4" y2="19"/><line x1="8" y1="5" x2="8" y2="19"/><line x1="12" y1="5" x2="12" y2="19"/><line x1="17" y1="5" x2="17" y2="19"/><line x1="21" y1="5" x2="21" y2="19"/></svg>
+                Boleto
+                <span class="pay-method__tag">1–3 dias</span>
+              </button>
+            </div>
+
+            <div class="pix-panel">
+              <div class="pix-qr" aria-hidden="true">
+                <span></span><span></span><span></span><span class="off"></span><span></span><span class="off"></span><span class="off"></span><span></span><span></span><span></span><span></span>
+                <span></span><span class="off"></span><span></span><span class="off"></span><span></span><span></span><span class="off"></span><span></span><span class="off"></span><span class="off"></span><span></span>
+                <span></span><span class="off"></span><span></span><span class="off"></span><span class="off"></span><span></span><span class="off"></span><span></span><span class="off"></span><span></span><span></span>
+                <span class="off"></span><span></span><span class="off"></span><span></span><span></span><span class="off"></span><span></span><span class="off"></span><span></span><span class="off"></span><span class="off"></span>
+                <span></span><span></span><span></span><span class="off"></span><span></span><span></span><span class="off"></span><span></span><span></span><span class="off"></span><span></span>
+                <span class="off"></span><span></span><span class="off"></span><span></span><span class="off"></span><span class="off"></span><span></span><span class="off"></span><span></span><span></span><span class="off"></span>
+                <span></span><span class="off"></span><span></span><span></span><span></span><span class="off"></span><span></span><span></span><span class="off"></span><span class="off"></span><span></span>
+                <span></span><span class="off"></span><span class="off"></span><span class="off"></span><span></span><span></span><span class="off"></span><span></span><span></span><span class="off"></span><span></span>
+                <span></span><span></span><span></span><span class="off"></span><span class="off"></span><span></span><span></span><span class="off"></span><span></span><span></span><span class="off"></span>
+                <span class="off"></span><span class="off"></span><span></span><span></span><span></span><span class="off"></span><span class="off"></span><span></span><span class="off"></span><span></span><span></span>
+                <span></span><span></span><span class="off"></span><span></span><span></span><span></span><span class="off"></span><span></span><span></span><span class="off"></span><span></span>
+              </div>
+              <div class="pix-info">
+                <div>
+                  <div class="label" style="margin-bottom: 4px;">PIX copia e cola</div>
+                  <div class="pix-copy">
+                    <span class="pix-copy__code">00020126580014br.gov.bcb.pix0136a1f2…BR2941133520400005303986540596…</span>
+                    <button class="icon-btn" aria-label="Copiar código PIX" style="width: 28px; height: 28px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+                  </div>
+                </div>
+                <div class="side-kv"><span class="side-kv__label">Beneficiário</span><span class="side-kv__value">Setty Saúde LTDA</span></div>
+                <div class="side-kv"><span class="side-kv__label">Expira em</span><span class="side-kv__value" style="color: var(--attention-base);">2 dias · 06 jun 2026</span></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- TIMELINE DO PAGAMENTO -->
+          <section class="pay-card reveal">
+            <header class="pay-card__header">
+              <div>
+                <h2 class="pay-card__title">Linha do tempo da cobrança</h2>
+                <p class="pay-card__sub">Da geração do link até a liberação da logística</p>
+              </div>
+            </header>
+
+            <div class="timeline">
+              <div class="timeline-step timeline-step--done">
+                <span class="timeline-step__dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <div class="timeline-step__content">
+                  <div class="timeline-step__title">Link gerado</div>
+                  <div class="timeline-step__meta"><span class="tabular">04 jun 2026 · 10h31</span><span class="timeline-step__meta-dot">·</span><span>Global Pace · após autorização Anvisa</span></div>
+                </div>
+              </div>
+
+              <div class="timeline-step timeline-step--done">
+                <span class="timeline-step__dot"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                <div class="timeline-step__content">
+                  <div class="timeline-step__title">Enviado por WhatsApp</div>
+                  <div class="timeline-step__meta"><span class="tabular">04 jun 2026 · 10h32</span><span class="timeline-step__meta-dot">·</span><span class="tabular">+55 31 99812-4407</span><span class="timeline-step__meta-dot">·</span><span>entregue</span></div>
+                </div>
+              </div>
+
+              <div class="timeline-step timeline-step--current">
+                <span class="timeline-step__dot"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></span>
+                <div class="timeline-step__content">
+                  <div class="timeline-step__title">Aberto pelo paciente</div>
+                  <div class="timeline-step__meta"><span class="tabular">04 jun 2026 · 12h08</span><span class="timeline-step__meta-dot">·</span><span>escolheu PIX · ainda não pagou</span></div>
+                </div>
+              </div>
+
+              <div class="timeline-step timeline-step--pending">
+                <span class="timeline-step__dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></span>
+                <div class="timeline-step__content">
+                  <div class="timeline-step__title">Pagamento confirmado</div>
+                  <div class="timeline-step__meta"><span>aguardando webhook Global Pace</span></div>
+                </div>
+              </div>
+
+              <div class="timeline-step timeline-step--pending">
+                <span class="timeline-step__dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/></svg></span>
+                <div class="timeline-step__content">
+                  <div class="timeline-step__title">Logística liberada</div>
+                  <div class="timeline-step__meta"><span>dispara automaticamente após confirmação</span></div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- SIDE COL -->
+        <aside class="side-col">
+          <!-- Paciente -->
+          <article class="side-card reveal">
+            <span class="side-card__title">Paciente</span>
+            <div class="side-patient">
+              <span class="avatar avatar--lg avatar--attention">RC</span>
+              <div>
+                <div class="side-patient__name">Rafael Castro</div>
+                <div class="side-patient__cpf">228.667.339-72 · 39 anos</div>
+              </div>
+            </div>
+            <hr style="height: 0.5px; background: var(--divider); margin: 0; border: 0;" />
+            <div class="side-patient__contact">
+              <span class="side-patient__row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+                <span class="tabular">+55 31 99812-4407</span>
+              </span>
+              <span class="side-patient__row">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Savassi, Belo Horizonte · MG</span>
+              </span>
+            </div>
+            <a href="paciente-detalhe.html" style="color: var(--brand-strong); font-size: var(--fs-sm); font-weight: var(--fw-medium); margin-top: var(--space-2); display: inline-flex; align-items: center; gap: 4px;">
+              Ver paciente
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </article>
+
+          <!-- Quebra de valores -->
+          <article class="side-card reveal">
+            <span class="side-card__title">Quebra de valores</span>
+            <div class="side-line"><span class="side-line__label">Produto · CBD 3000mg</span><span class="side-line__value tabular">R$ 720,00</span></div>
+            <div class="side-line"><span class="side-line__label">Logística Memphis</span><span class="side-line__value tabular">R$ 180,00</span></div>
+            <div class="side-line"><span class="side-line__label">Taxa Anvisa</span><span class="side-line__value tabular">R$ 60,00</span></div>
+            <div class="side-line side-line--total"><span class="side-line__label">Total a cobrar</span><span class="side-line__value tabular">R$ 960,00</span></div>
+          </article>
+
+          <!-- Detalhe da transação -->
+          <article class="side-card reveal">
+            <span class="side-card__title">Transação Global Pace</span>
+            <div class="side-kv"><span class="side-kv__label">ID transação</span><span class="side-kv__value">gp_BR2941133-9f2a</span></div>
+            <div class="side-kv"><span class="side-kv__label">Método escolhido</span><span class="side-kv__value">PIX · à vista</span></div>
+            <div class="side-kv"><span class="side-kv__label">Status</span><span class="side-kv__value" style="color: var(--attention-base); display: inline-flex; align-items: center; gap: 6px;"><span class="status-dot status-dot--attention"></span>Aguardando</span></div>
+            <div class="side-kv"><span class="side-kv__label">Comprovante</span><span class="side-kv__value text-muted">—</span></div>
+          </article>
+
+          <!-- Ação: liberar logística (travado) -->
+          <article class="side-card reveal" style="gap: var(--space-4);">
+            <button class="btn btn--primary btn--block" disabled>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              Liberar logística
+            </button>
+            <span class="gate-note">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Destrava na confirmação do pagamento
+            </span>
+          </article>
+        </aside>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const opts = document.querySelectorAll(".theme-toggle__opt");
+    const apply = (mode) => {
+      root.setAttribute("data-theme", mode);
+      opts.forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === mode ? "true" : "false"));
+      try { localStorage.setItem("d10-theme", mode); } catch (_) {}
+    };
+    opts.forEach((b) => b.addEventListener("click", () => apply(b.dataset.themeSet)));
+    try {
+      const saved = localStorage.getItem("d10-theme");
+      if (saved === "light" || saved === "dark") apply(saved);
+    } catch (_) {}
+
+    // Method tabs (visual apenas)
+    const methods = document.querySelectorAll(".pay-method");
+    methods.forEach((m) => m.addEventListener("click", () => {
+      methods.forEach((x) => x.setAttribute("aria-pressed", "false"));
+      m.setAttribute("aria-pressed", "true");
+    }));
+  </script>
+</body>
+</html>

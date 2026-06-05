@@ -40,6 +40,12 @@ lumi-design/
 | 06 | `pages/pedidos.html` | **Fechado** — lista de pedidos · 4 mini-stats · toggle grade/tabela · cards com mini-timeline horizontal de 6 estágios + produto destacado com border-left coral |
 | 07 | `pages/pedido-detalhe.html` | **Fechado** — detalhe do pedido · header com código + paciente clicável · hero do estágio atual + barra de progresso · timeline vertical de 6 estágios com sub-eventos do tracking Memphis · side col com paciente + produto + breakdown financeiro |
 | 08 | `pages/anvisa.html` | **Fechado** — saúde operacional do bot Anvisa · alerta crítico de sessão Gov.br + 4 mini-stats + card do bot (sessão / fila pg-boss / taxa de sucesso / procuradora) + lista de protocolos com estados captcha-pendente, autorizada, em análise e renovação |
+| 09 | `pages/pro-paciente.html` | **Fechado** — tela de validação do brand system · stats semânticos + alerta crítico Anvisa + prescrição + linha do tratamento |
+| 10 | `pages/financeiro.html` | **Fechado** — gestão de cobranças Global Pace · a receber / vencidas / pagas · conciliação por webhook |
+| 11 | `pages/pagamento-detalhe.html` | **Fechado** — cobrança de um pedido · link Global Pace · PIX / cartão / boleto · timeline e liberação da logística |
+| 12 | `pages/logistica.html` | **Fechado** — torre de controle dos envios internacionais · transportadora Memphis · rota Paraguai → Brasil · envios ativos |
+| 13 | `pages/logistica-detalhe.html` | **Fechado** — rastreio de um envio (#BR2934118) · linha do tempo do tracking Memphis · etapas e situação aduaneira |
+| 14 | `pages/farmacovigilancia.html` | **Fechado** — pós-venda clínico · check-ins periódicos · evolução do tratamento · registro de efeitos adversos |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 
