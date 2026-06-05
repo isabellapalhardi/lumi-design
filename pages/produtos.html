@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Produtos · lumi</title>
+  <link rel="stylesheet" href="../styles/tokens.css" />
+  <link rel="stylesheet" href="../styles/components.css" />
+  <style>
+    html { margin: 0; padding: 0; background: var(--brand); }
+    body {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: 0;
+      padding: 40px;
+      box-sizing: border-box;
+      display: flex;
+      background: var(--brand);
+      overflow: hidden;
+    }
+
+    .dash-shell {
+      flex: 1;
+      height: 100%;
+      align-self: stretch;
+      display: grid;
+      grid-template-columns: 248px 1fr;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px -28px rgba(45, 35, 29, 0.35);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.30), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.20), transparent 65%),
+        rgba(236, 224, 204, 0.88);
+    }
+    [data-theme="dark"] .dash-shell {
+      background:
+        radial-gradient(ellipse 30% 45% at 12% 110%, rgba(196, 104, 80, 0.22), transparent 62%),
+        radial-gradient(ellipse 24% 36% at 100% -5%, rgba(196, 104, 80, 0.16), transparent 65%),
+        rgba(34, 28, 24, 0.96);
+    }
+
+    /* SIDEBAR */
+    .dash-sidebar { padding: var(--space-5) var(--space-4) var(--space-4); display: flex; flex-direction: column; gap: var(--space-6); border-right: 0.5px solid var(--divider); overflow-y: auto; background: transparent; }
+    .dash-brand { padding: 0 var(--space-3); }
+    .dash-brand__wordmark { font-family: var(--font-serif); font-weight: 500; font-size: 34px; letter-spacing: -0.02em; line-height: 1; color: var(--brand); font-optical-sizing: auto; margin: 0; }
+    .dash-nav { display: flex; flex-direction: column; gap: var(--space-5); }
+    .dash-nav__group { display: flex; flex-direction: column; gap: 2px; }
+    .dash-nav__group-title { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); padding: 0 var(--space-3); margin-bottom: var(--space-2); }
+    .dash-nav__link { display: flex; align-items: center; gap: var(--space-3); padding: 8px var(--space-3); border-radius: var(--radius-pill); color: var(--text-muted); font-size: var(--fs-base); font-weight: var(--fw-medium); cursor: pointer; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); text-decoration: none; position: relative; }
+    .dash-nav__link:hover { background: rgba(45, 35, 29, 0.05); color: var(--text); text-decoration: none; }
+    [data-theme="dark"] .dash-nav__link:hover { background: rgba(241, 230, 214, 0.05); }
+    .dash-nav__link[aria-current="page"] { background: var(--brand); color: #FFF7EE; }
+    .dash-nav__link[aria-current="page"]:hover { background: var(--brand-strong); }
+    .dash-nav__icon { width: 18px; height: 18px; flex: none; }
+    .dash-nav__badge { margin-left: auto; font-size: var(--fs-xs); font-weight: var(--fw-semibold); padding: 1px 6px; border-radius: var(--radius-pill); background: var(--attention-fill); color: var(--attention-base); }
+    .dash-nav__link[aria-current="page"] .dash-nav__badge { background: rgba(255, 247, 238, 0.22); color: #FFF7EE; }
+    .dash-sidebar__footer { margin-top: auto; padding: var(--space-3); display: flex; align-items: center; gap: var(--space-3); border-top: 0.5px solid var(--divider); padding-top: var(--space-4); }
+    .dash-user-meta { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+    .dash-user-name { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dash-user-role { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* MAIN */
+    .dash-main { display: flex; flex-direction: column; overflow: hidden; min-width: 0; min-height: 0; }
+    .dash-topbar { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4) var(--space-6); border-bottom: 0.5px solid var(--divider); background: transparent; flex: none; }
+    .dash-topbar__title { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); }
+    .dash-topbar__actions { display: flex; align-items: center; gap: var(--space-3); }
+    .dash-content { flex: 1; overflow-y: auto; min-height: 0; padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4); }
+
+    /* Page header */
+    .ord-header { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+    .ord-header__title { font-size: var(--fs-2xl); font-weight: var(--fw-semibold); letter-spacing: -0.015em; line-height: 1.1; margin: 0; display: inline-flex; align-items: baseline; gap: var(--space-3); }
+    .ord-header__count { font-size: var(--fs-md); font-weight: var(--fw-medium); color: var(--text-muted); letter-spacing: 0; }
+    .ord-header__actions { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+    /* Mini stats */
+    .ord-mini-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+    .ord-mini-stat { background: var(--surface); border-radius: var(--radius-card); border: 0.5px solid var(--divider); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4); position: relative; overflow: hidden; }
+    .ord-mini-stat::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--mini-color, var(--text-faint)); opacity: 0.75; }
+    .ord-mini-stat--care { --mini-color: var(--care-base); }
+    .ord-mini-stat--attention { --mini-color: var(--attention-base); }
+    .ord-mini-stat--regulatory { --mini-color: var(--regulatory-base); }
+    .ord-mini-stat__label { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+    .ord-mini-stat__value { font-size: var(--fs-xl); font-weight: var(--fw-semibold); color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; line-height: 1.2; margin-top: 2px; }
+    .ord-mini-stat__value--text { font-size: var(--fs-md); letter-spacing: -0.005em; }
+    .ord-mini-stat__meta { font-size: var(--fs-xs); color: var(--text-muted); }
+
+    /* Toolbar */
+    .pac-toolbar { background: var(--surface); border: 0.5px solid var(--divider); border-radius: var(--radius-card); box-shadow: var(--shadow-sm); padding: var(--space-3) var(--space-4); display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+    .pac-search { flex: 1; min-width: 240px; position: relative; }
+    .pac-search__input { width: 100%; background: transparent; border: 0; outline: none; font-family: inherit; font-size: var(--fs-base); color: var(--text); padding: 6px 6px 6px 32px; }
+    .pac-search__input::placeholder { color: var(--text-faint); }
+    .pac-search__icon { position: absolute; left: 6px; top: 50%; transform: translateY(-50%); color: var(--text-faint); }
+    .pac-toolbar__divider { width: 0.5px; height: 22px; background: var(--divider-strong); }
+    .pac-filter { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: var(--radius-pill); background: var(--sidebar); color: var(--text); font-size: var(--fs-sm); font-weight: var(--fw-medium); border: 0; cursor: pointer; transition: background var(--duration-fast) var(--ease-out); }
+    .pac-filter:hover { background: var(--divider-strong); }
+    .pac-filter--active { background: var(--brand); color: #FFF7EE; }
+    .pac-filter--active:hover { background: var(--brand-strong); }
+    .pac-filter__count { font-size: var(--fs-xs); opacity: 0.7; font-variant-numeric: tabular-nums; }
+
+    .pac-view-toggle { display: inline-flex; background: var(--sidebar); border-radius: var(--radius-pill); padding: 3px; gap: 2px; margin-left: auto; }
+    .pac-view-toggle__btn { width: 30px; height: 28px; border-radius: var(--radius-pill); background: transparent; border: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+    .pac-view-toggle__btn[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+
+    /* Mostra/esconde view */
+    .dash-content[data-view="grid"] .pac-table-wrap { display: none; }
+    .dash-content[data-view="table"] .prod-grid { display: none; }
+
+    /* GRID DE PRODUTOS */
+    .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(244px, 1fr)); gap: var(--space-3); }
+    .prod-card { background: var(--surface); border: 0.5px solid var(--divider); border-radius: var(--radius-card); box-shadow: var(--shadow-sm); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); cursor: pointer; position: relative; overflow: hidden; transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out); }
+    .prod-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .prod-card__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
+    .prod-card__menu { width: 28px; height: 28px; border-radius: var(--radius-pill); background: transparent; color: var(--text-faint); border: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+    .prod-card__menu:hover { background: var(--divider); color: var(--text); }
+
+    .prod-thumb { height: 96px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #FFF7EE; position: relative; overflow: hidden; --thumb: var(--care-base); background: linear-gradient(150deg, var(--thumb), color-mix(in srgb, var(--thumb) 72%, #2D231D)); }
+    .prod-thumb svg { width: 38px; height: 38px; opacity: 0.92; }
+    .prod-thumb__tag { position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: var(--fw-semibold); letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 7px; border-radius: var(--radius-pill); background: rgba(255, 247, 238, 0.22); color: #FFF7EE; backdrop-filter: blur(4px); }
+    .prod-thumb--oleo { --thumb: var(--care-base); }
+    .prod-thumb--topico { --thumb: var(--regulatory-base); }
+    .prod-thumb--comestivel { --thumb: #B7873F; }
+    .prod-thumb--capsula { --thumb: #8A7BB8; }
+    .prod-thumb--flor { --thumb: #6E9367; }
+
+    .prod-card__body { display: flex; flex-direction: column; gap: 3px; }
+    .prod-card__name { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); letter-spacing: -0.005em; line-height: 1.25; }
+    .prod-card__conc { font-size: var(--fs-sm); color: var(--text-muted); }
+    .prod-card__foot { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-2); margin-top: 2px; }
+    .prod-price { font-size: var(--fs-lg); font-weight: var(--fw-semibold); color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+    .prod-price__cents { font-size: var(--fs-sm); color: var(--text-muted); }
+
+    .prod-stock { display: inline-flex; align-items: center; gap: 5px; font-size: var(--fs-xs); font-weight: var(--fw-medium); color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .prod-stock--ok { color: var(--care-base); }
+    .prod-stock--low { color: var(--attention-base); font-weight: var(--fw-semibold); }
+    .prod-stock--out { color: var(--attention-base); font-weight: var(--fw-semibold); }
+    .prod-stock--incoming { color: var(--regulatory-base); font-weight: var(--fw-medium); }
+
+    .prod-card__rx { font-size: var(--fs-xs); color: var(--text-faint); display: inline-flex; align-items: center; gap: 5px; }
+
+    /* TABELA */
+    .pac-table-wrap { background: var(--surface); border-radius: var(--radius-card); border: 0.5px solid var(--divider); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .pac-table { width: 100%; border-collapse: collapse; font-size: var(--fs-base); }
+    .pac-table thead th { text-align: left; font-weight: var(--fw-semibold); letter-spacing: 0.06em; text-transform: uppercase; font-size: var(--fs-sm); color: var(--text-muted); padding: var(--space-4); border-bottom: 0.5px solid var(--divider); white-space: nowrap; }
+    .pac-table tbody td { padding: var(--space-4); border-bottom: 0.5px solid var(--divider); vertical-align: middle; }
+    .pac-table tbody tr:last-child td { border-bottom: 0; }
+    .pac-table tbody tr { transition: background var(--duration-fast) var(--ease-out); cursor: pointer; }
+    .pac-table tbody tr:hover { background: rgba(45, 35, 29, 0.03); }
+    [data-theme="dark"] .pac-table tbody tr:hover { background: rgba(241, 230, 214, 0.04); }
+    .pac-table .col-actions { width: 64px; text-align: right; }
+    .pac-table .tabular { font-variant-numeric: tabular-nums; }
+    .pac-table .col-num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .prod-row-name { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
+    .prod-row-thumb { width: 38px; height: 38px; border-radius: 9px; flex: none; display: flex; align-items: center; justify-content: center; color: #FFF7EE; --thumb: var(--care-base); background: linear-gradient(150deg, var(--thumb), color-mix(in srgb, var(--thumb) 72%, #2D231D)); }
+    .prod-row-thumb svg { width: 18px; height: 18px; }
+    .prod-row-thumb--oleo { --thumb: var(--care-base); }
+    .prod-row-thumb--topico { --thumb: var(--regulatory-base); }
+    .prod-row-thumb--comestivel { --thumb: #B7873F; }
+    .prod-row-thumb--capsula { --thumb: #8A7BB8; }
+    .prod-row-thumb--flor { --thumb: #6E9367; }
+    .prod-row-meta { display: flex; flex-direction: column; min-width: 0; }
+    .prod-row-primary { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--fs-md); letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .prod-row-secondary { font-size: var(--fs-sm); color: var(--text-muted); margin-top: 1px; }
+
+    .pac-actions { display: inline-flex; align-items: center; gap: 2px; justify-content: flex-end; }
+    .pac-actions__btn { width: 30px; height: 30px; border-radius: var(--radius-pill); background: transparent; color: var(--text-muted); border: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+    .pac-actions__btn:hover { background: var(--divider); color: var(--text); }
+
+    @media (max-width: 1100px) { .col-rx { display: none; } }
+    @media (max-width: 960px) { .dash-shell { grid-template-columns: 1fr; } .dash-sidebar { display: none; } }
+    @media (max-width: 880px) { .ord-mini-stats { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  <div class="dash-shell">
+    <!-- SIDEBAR -->
+    <aside class="dash-sidebar">
+      <div class="dash-brand"><h1 class="dash-brand__wordmark">lumi</h1></div>
+      <nav class="dash-nav" aria-label="Navegação principal">
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Operação</span>
+          <a class="dash-nav__link" href="dashboard.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>Início</a>
+          <a class="dash-nav__link" href="pacientes.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Pacientes<span class="dash-nav__badge">47</span></a>
+          <a class="dash-nav__link" href="pedidos.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>Pedidos<span class="dash-nav__badge">12</span></a>
+          <a class="dash-nav__link" href="produtos.html" aria-current="page"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Produtos</a>
+          <a class="dash-nav__link" href="financeiro.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>Financeiro<span class="dash-nav__badge">5</span></a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Atendimento</a>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-5"/></svg>Relatórios</a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Regulatório</span>
+          <a class="dash-nav__link" href="anvisa.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg>Anvisa<span class="dash-nav__badge">3</span></a>
+          <a class="dash-nav__link" href="logistica.html"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>Logística<span class="dash-nav__badge">4</span></a>
+        </div>
+        <div class="dash-nav__group">
+          <span class="dash-nav__group-title">Sistema</span>
+          <a class="dash-nav__link" href="#"><svg class="dash-nav__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Configurações</a>
+        </div>
+      </nav>
+      <div class="dash-sidebar__footer">
+        <span class="avatar avatar--care">EM</span>
+        <div class="dash-user-meta">
+          <span class="dash-user-name">Emília Mendes</span>
+          <span class="dash-user-role">Admin · Setty</span>
+        </div>
+        <button class="pac-actions__btn" aria-label="Sair"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="dash-main">
+      <header class="dash-topbar">
+        <div class="inline" style="gap: var(--space-3); font-size: var(--fs-sm);">
+          <a href="dashboard.html" style="color: var(--text-muted); text-decoration: none;">Início</a>
+          <span style="color: var(--text-faint);">/</span>
+          <span class="dash-topbar__title">Produtos</span>
+        </div>
+        <div class="dash-topbar__actions">
+          <button class="icon-btn" aria-label="Notificações" style="position: relative;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span class="status-dot status-dot--attention" style="position: absolute; top: 7px; right: 7px; width: 7px; height: 7px;"></span></button>
+          <div class="theme-toggle" role="group" aria-label="Tema">
+            <button class="theme-toggle__opt" data-theme-set="light" aria-pressed="true" aria-label="Tema claro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="m17.66 6.34 1.41-1.41"/></svg></button>
+            <button class="theme-toggle__opt" data-theme-set="dark" aria-pressed="false" aria-label="Tema escuro"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="dash-content" data-view="grid">
+        <!-- Header da página -->
+        <section class="ord-header reveal">
+          <div>
+            <h1 class="ord-header__title">Catálogo <span class="ord-header__count tabular">10 produtos ativos</span></h1>
+            <p class="text-muted" style="font-size: var(--fs-sm); margin: 2px 0 0;">Produtos de cannabis medicinal importados do Paraguai · 5 categorias · preços em reais para a tabela de prescrição.</p>
+          </div>
+          <div class="ord-header__actions">
+            <button class="btn btn--secondary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Exportar tabela
+            </button>
+            <button class="btn btn--primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Novo produto
+            </button>
+          </div>
+        </section>
+
+        <!-- Mini stats -->
+        <section class="ord-mini-stats reveal" aria-label="Resumo do catálogo">
+          <article class="ord-mini-stat ord-mini-stat--care">
+            <div class="ord-mini-stat__label">SKUs ativos</div>
+            <div class="ord-mini-stat__value tabular">10</div>
+            <div class="ord-mini-stat__meta">em 5 categorias</div>
+          </article>
+          <article class="ord-mini-stat ord-mini-stat--attention">
+            <div class="ord-mini-stat__label">Estoque crítico</div>
+            <div class="ord-mini-stat__value tabular">2</div>
+            <div class="ord-mini-stat__meta">1 baixo · 1 esgotado</div>
+          </article>
+          <article class="ord-mini-stat ord-mini-stat--care">
+            <div class="ord-mini-stat__label">Mais prescrito</div>
+            <div class="ord-mini-stat__value ord-mini-stat__value--text">CBD Full Spectrum 3000mg</div>
+            <div class="ord-mini-stat__meta">62% dos pedidos do mês</div>
+          </article>
+          <article class="ord-mini-stat ord-mini-stat--regulatory">
+            <div class="ord-mini-stat__label">Importação a caminho</div>
+            <div class="ord-mini-stat__value tabular">1</div>
+            <div class="ord-mini-stat__meta">CBG · Memphis · chega 14 jun</div>
+          </article>
+        </section>
+
+        <!-- Toolbar -->
+        <section class="pac-toolbar reveal">
+          <div class="pac-search">
+            <span class="pac-search__icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input class="pac-search__input" type="search" placeholder="Buscar por nome, concentração, espectro…" />
+          </div>
+          <span class="pac-toolbar__divider" aria-hidden="true"></span>
+          <button class="pac-filter pac-filter--active">Todos <span class="pac-filter__count">10</span></button>
+          <button class="pac-filter">Óleos <span class="pac-filter__count">6</span></button>
+          <button class="pac-filter">Comestíveis <span class="pac-filter__count">1</span></button>
+          <button class="pac-filter">Cápsulas <span class="pac-filter__count">1</span></button>
+          <button class="pac-filter">Tópicos <span class="pac-filter__count">1</span></button>
+          <button class="pac-filter">Flores <span class="pac-filter__count">1</span></button>
+
+          <div class="pac-view-toggle" role="group" aria-label="Modo de visualização">
+            <button class="pac-view-toggle__btn" data-view="grid" aria-pressed="true" aria-label="Visualizar como grade">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </button>
+            <button class="pac-view-toggle__btn" data-view="table" aria-pressed="false" aria-label="Visualizar como tabela">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/></svg>
+            </button>
+          </div>
+        </section>
+
+        <!-- GRADE -->
+        <section class="prod-grid reveal" aria-label="Produtos">
+
+          <!-- 1 · CBD Full Spectrum 3000mg (campeão) -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--care">Óleo · full spectrum</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--oleo">
+              <span class="prod-thumb__tag">★ mais prescrito</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">CBD Full Spectrum 3000mg</div>
+              <div class="prod-card__conc">30ml · 100 mg/ml · THC &lt; 0,2%</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 890<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>42 em estoque</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>38 prescrições no mês</span>
+          </article>
+
+          <!-- 2 · CBD Full Spectrum 1500mg -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--care">Óleo · full spectrum</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--oleo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">CBD Full Spectrum 1500mg</div>
+              <div class="prod-card__conc">30ml · 50 mg/ml · THC &lt; 0,2%</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 560<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>31 em estoque</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>21 prescrições no mês</span>
+          </article>
+
+          <!-- 3 · CBD Isolado 1000mg (estoque baixo) -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--care">Óleo · isolado</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--oleo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">CBD Isolado 1000mg</div>
+              <div class="prod-card__conc">30ml · 33 mg/ml · 0% THC</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 420<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--low"><span class="status-dot status-dot--attention status-dot--pulse"></span>8 · estoque baixo</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>14 prescrições no mês</span>
+          </article>
+
+          <!-- 4 · CBD/THC 1:1 600mg (controlado) -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--attention">Óleo · 1:1 · controlado</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--oleo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">CBD/THC 1:1 600mg</div>
+              <div class="prod-card__conc">30ml · 20 mg/ml · receita B branca</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 640<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>19 em estoque</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>9 prescrições no mês</span>
+          </article>
+
+          <!-- 5 · THC Full Spectrum 1200mg (esgotado) -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--attention">Óleo · THC · controlado</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--oleo" style="opacity: 0.78;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">THC Full Spectrum 1200mg</div>
+              <div class="prod-card__conc">30ml · 40 mg/ml · receita A amarela</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 720<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--out"><span class="status-dot status-dot--attention"></span>esgotado</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>6 prescrições no mês</span>
+          </article>
+
+          <!-- 6 · CBG Full Spectrum 1500mg (importação a caminho) -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--regulatory">Óleo · CBG</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--oleo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">CBG Full Spectrum 1500mg</div>
+              <div class="prod-card__conc">30ml · 50 mg/ml · THC &lt; 0,2%</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 680<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--incoming"><span class="status-dot status-dot--regulatory"></span>chega 14 jun</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>4 prescrições no mês</span>
+          </article>
+
+          <!-- 7 · CBD Gummies 25mg -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--care">Comestível</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--comestivel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">CBD Gummies 25mg</div>
+              <div class="prod-card__conc">60 unidades · 25 mg/un · sabor frutas</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 310<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>54 em estoque</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>11 prescrições no mês</span>
+          </article>
+
+          <!-- 8 · CBD Softgel 50mg -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--care">Cápsula</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--capsula">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5 3.5 13.5a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">CBD Softgel 50mg</div>
+              <div class="prod-card__conc">30 cápsulas · 50 mg/cáp · 0% THC</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 380<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>27 em estoque</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>8 prescrições no mês</span>
+          </article>
+
+          <!-- 9 · CBD Tópico Bálsamo 500mg -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--regulatory">Tópico</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--topico">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v3H9z"/><path d="M7 6h10v13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z"/><line x1="10" y1="11" x2="14" y2="11"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">CBD Tópico Bálsamo 500mg</div>
+              <div class="prod-card__conc">60g · uso tópico · THC &lt; 0,2%</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 240<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>16 em estoque</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>5 prescrições no mês</span>
+          </article>
+
+          <!-- 10 · Flor CBD Charlotte's Angel -->
+          <article class="prod-card" onclick="location.href='#'">
+            <div class="prod-card__head">
+              <span class="badge badge--regulatory">Flor · in natura</span>
+              <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+            </div>
+            <div class="prod-thumb prod-thumb--flor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-6-4-6-10a6 6 0 0 1 12 0c0 6-6 10-6 10z"/><path d="M12 22V8"/><path d="M12 12c-2-1-3-3-3-3M12 12c2-1 3-3 3-3"/></svg>
+            </div>
+            <div class="prod-card__body">
+              <div class="prod-card__name">Flor CBD Charlotte's Angel</div>
+              <div class="prod-card__conc">3g · 16% CBD · THC &lt; 0,2%</div>
+            </div>
+            <div class="prod-card__foot">
+              <span class="prod-price">R$ 180<span class="prod-price__cents">,00</span></span>
+              <span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>12 em estoque</span>
+            </div>
+            <span class="prod-card__rx"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>3 prescrições no mês</span>
+          </article>
+
+        </section>
+
+        <!-- TABELA -->
+        <section class="pac-table-wrap reveal" aria-label="Produtos">
+          <table class="pac-table">
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Categoria</th>
+                <th>Concentração</th>
+                <th class="col-num">Preço</th>
+                <th>Estoque</th>
+                <th class="col-rx col-num">Prescrições/mês</th>
+                <th class="col-actions">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--oleo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">CBD Full Spectrum 3000mg</span><span class="prod-row-secondary">★ mais prescrito · SKU OLE-3000</span></div></div></td>
+                <td><span class="badge badge--care">Óleo · full spectrum</span></td>
+                <td class="tabular">30ml · 100 mg/ml</td>
+                <td class="col-num tabular">R$ 890,00</td>
+                <td><span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>42 un</span></td>
+                <td class="col-rx col-num tabular">38</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--oleo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">CBD Full Spectrum 1500mg</span><span class="prod-row-secondary">SKU OLE-1500</span></div></div></td>
+                <td><span class="badge badge--care">Óleo · full spectrum</span></td>
+                <td class="tabular">30ml · 50 mg/ml</td>
+                <td class="col-num tabular">R$ 560,00</td>
+                <td><span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>31 un</span></td>
+                <td class="col-rx col-num tabular">21</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--oleo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">CBD Isolado 1000mg</span><span class="prod-row-secondary">SKU OLE-ISO-1000</span></div></div></td>
+                <td><span class="badge badge--care">Óleo · isolado</span></td>
+                <td class="tabular">30ml · 33 mg/ml</td>
+                <td class="col-num tabular">R$ 420,00</td>
+                <td><span class="prod-stock prod-stock--low"><span class="status-dot status-dot--attention status-dot--pulse"></span>8 un · baixo</span></td>
+                <td class="col-rx col-num tabular">14</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--oleo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">CBD/THC 1:1 600mg</span><span class="prod-row-secondary">receita B branca · SKU OLE-11-600</span></div></div></td>
+                <td><span class="badge badge--attention">Óleo · 1:1 · controlado</span></td>
+                <td class="tabular">30ml · 20 mg/ml</td>
+                <td class="col-num tabular">R$ 640,00</td>
+                <td><span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>19 un</span></td>
+                <td class="col-rx col-num tabular">9</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--oleo" style="opacity: 0.78;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">THC Full Spectrum 1200mg</span><span class="prod-row-secondary">receita A amarela · SKU OLE-THC-1200</span></div></div></td>
+                <td><span class="badge badge--attention">Óleo · THC · controlado</span></td>
+                <td class="tabular">30ml · 40 mg/ml</td>
+                <td class="col-num tabular">R$ 720,00</td>
+                <td><span class="prod-stock prod-stock--out"><span class="status-dot status-dot--attention"></span>esgotado</span></td>
+                <td class="col-rx col-num tabular">6</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--oleo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">CBG Full Spectrum 1500mg</span><span class="prod-row-secondary">importação a caminho · SKU OLE-CBG-1500</span></div></div></td>
+                <td><span class="badge badge--regulatory">Óleo · CBG</span></td>
+                <td class="tabular">30ml · 50 mg/ml</td>
+                <td class="col-num tabular">R$ 680,00</td>
+                <td><span class="prod-stock prod-stock--incoming"><span class="status-dot status-dot--regulatory"></span>chega 14 jun</span></td>
+                <td class="col-rx col-num tabular">4</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--comestivel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">CBD Gummies 25mg</span><span class="prod-row-secondary">sabor frutas · SKU COM-GUM-25</span></div></div></td>
+                <td><span class="badge badge--care">Comestível</span></td>
+                <td class="tabular">60 un · 25 mg/un</td>
+                <td class="col-num tabular">R$ 310,00</td>
+                <td><span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>54 un</span></td>
+                <td class="col-rx col-num tabular">11</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--capsula"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 20.5 3.5 13.5a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">CBD Softgel 50mg</span><span class="prod-row-secondary">SKU CAP-SOFT-50</span></div></div></td>
+                <td><span class="badge badge--care">Cápsula</span></td>
+                <td class="tabular">30 cáps · 50 mg/cáp</td>
+                <td class="col-num tabular">R$ 380,00</td>
+                <td><span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>27 un</span></td>
+                <td class="col-rx col-num tabular">8</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--topico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v3H9z"/><path d="M7 6h10v13a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2z"/><line x1="10" y1="11" x2="14" y2="11"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">CBD Tópico Bálsamo 500mg</span><span class="prod-row-secondary">SKU TOP-BAL-500</span></div></div></td>
+                <td><span class="badge badge--regulatory">Tópico</span></td>
+                <td class="tabular">60g · uso tópico</td>
+                <td class="col-num tabular">R$ 240,00</td>
+                <td><span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>16 un</span></td>
+                <td class="col-rx col-num tabular">5</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+              <tr onclick="location.href='#'">
+                <td><div class="prod-row-name"><span class="prod-row-thumb prod-row-thumb--flor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-6-4-6-10a6 6 0 0 1 12 0c0 6-6 10-6 10z"/><path d="M12 22V8"/></svg></span><div class="prod-row-meta"><span class="prod-row-primary">Flor CBD Charlotte's Angel</span><span class="prod-row-secondary">in natura · SKU FLO-CHA-3</span></div></div></td>
+                <td><span class="badge badge--regulatory">Flor · in natura</span></td>
+                <td class="tabular">3g · 16% CBD</td>
+                <td class="col-num tabular">R$ 180,00</td>
+                <td><span class="prod-stock prod-stock--ok"><span class="status-dot status-dot--care"></span>12 un</span></td>
+                <td class="col-rx col-num tabular">3</td>
+                <td class="col-actions"><div class="pac-actions"><button class="pac-actions__btn" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const opts = document.querySelectorAll(".theme-toggle__opt");
+    const apply = (mode) => {
+      root.setAttribute("data-theme", mode);
+      opts.forEach((b) => b.setAttribute("aria-pressed", b.dataset.themeSet === mode ? "true" : "false"));
+      try { localStorage.setItem("lumi-theme", mode); } catch (_) {}
+    };
+    opts.forEach((b) => b.addEventListener("click", () => apply(b.dataset.themeSet)));
+    try {
+      const saved = localStorage.getItem("lumi-theme");
+      if (saved === "light" || saved === "dark") apply(saved);
+    } catch (_) {}
+
+    const filters = document.querySelectorAll(".pac-filter");
+    filters.forEach((f) => f.addEventListener("click", () => {
+      filters.forEach((x) => x.classList.remove("pac-filter--active"));
+      f.classList.add("pac-filter--active");
+    }));
+
+    // View toggle Grade ↔ Tabela
+    const content = document.querySelector(".dash-content");
+    const viewBtns = document.querySelectorAll(".pac-view-toggle__btn");
+    const applyView = (view) => {
+      content.setAttribute("data-view", view);
+      viewBtns.forEach((b) => b.setAttribute("aria-pressed", b.dataset.view === view ? "true" : "false"));
+      try { localStorage.setItem("lumi-prod-view", view); } catch (_) {}
+    };
+    viewBtns.forEach((b) => b.addEventListener("click", () => applyView(b.dataset.view)));
+    try {
+      const savedView = localStorage.getItem("lumi-prod-view");
+      if (savedView === "grid" || savedView === "table") applyView(savedView);
+    } catch (_) {}
+  </script>
+</body>
+</html>

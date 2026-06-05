@@ -46,6 +46,7 @@ lumi-design/
 | 12 | `pages/logistica.html` | **Fechado** — torre de controle dos envios internacionais · transportadora Memphis · rota Paraguai → Brasil · envios ativos |
 | 13 | `pages/logistica-detalhe.html` | **Fechado** — rastreio de um envio (#BR2934118) · linha do tempo do tracking Memphis · etapas e situação aduaneira |
 | 14 | `pages/farmacovigilancia.html` | **Fechado** — pós-venda clínico · check-ins periódicos · evolução do tratamento · registro de efeitos adversos |
+| 15 | `pages/produtos.html` | **Fechado** — catálogo dos produtos de cannabis importados do Paraguai · toggle grade ↔ tabela · 4 mini-stats · filtros por categoria · cards com thumb por categoria, preço, badge de estoque (ok / baixo / esgotado / importação a caminho) e prescrições no mês |
 
 Próximas telas a desenhar entram via `pages/` conforme avançamos.
 
