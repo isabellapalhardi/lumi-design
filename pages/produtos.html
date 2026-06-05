@@ -110,22 +110,19 @@
 
     /* GRID DE PRODUTOS */
     .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(244px, 1fr)); gap: var(--space-3); }
-    .prod-card { background: var(--surface); border: 0.5px solid var(--divider); border-radius: var(--radius-card); box-shadow: var(--shadow-sm); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); cursor: pointer; position: relative; overflow: hidden; transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out); }
+    .prod-card { background: var(--surface); border: 0.5px solid var(--divider); border-radius: var(--radius-card); box-shadow: var(--shadow-sm); padding: var(--space-4) var(--space-4) var(--space-4) calc(var(--space-4) + 6px); display: flex; flex-direction: column; gap: var(--space-2); cursor: pointer; position: relative; overflow: hidden; transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out); }
     .prod-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .prod-card::before { content: ""; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; background: var(--cat-color, var(--care-base)); }
     .prod-card__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); }
     .prod-card__menu { width: 28px; height: 28px; border-radius: var(--radius-pill); background: transparent; color: var(--text-faint); border: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: background var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
     .prod-card__menu:hover { background: var(--divider); color: var(--text); }
 
-    .prod-thumb { height: 96px; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: #FFF7EE; position: relative; overflow: hidden; --thumb: var(--care-base); background: linear-gradient(150deg, var(--thumb), color-mix(in srgb, var(--thumb) 72%, #2D231D)); }
-    .prod-thumb__strength { display: flex; flex-direction: column; align-items: center; line-height: 1; color: #FFF7EE; }
-    .prod-thumb__num { font-size: 30px; font-weight: var(--fw-semibold); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-    .prod-thumb__unit { font-size: var(--fs-xs); font-weight: var(--fw-semibold); letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.82; margin-top: 6px; }
-    .prod-thumb__tag { position: absolute; top: 8px; left: 8px; font-size: 10px; font-weight: var(--fw-semibold); letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 7px; border-radius: var(--radius-pill); background: rgba(255, 247, 238, 0.22); color: #FFF7EE; backdrop-filter: blur(4px); }
-    .prod-thumb--oleo { --thumb: var(--care-base); }
-    .prod-thumb--topico { --thumb: var(--regulatory-base); }
-    .prod-thumb--comestivel { --thumb: #B7873F; }
-    .prod-thumb--capsula { --thumb: #8A7BB8; }
-    .prod-thumb--flor { --thumb: #6E9367; }
+    /* Categoria por cor — faixa lateral */
+    .prod-card--oleo { --cat-color: #7E9170; }
+    .prod-card--comestivel { --cat-color: #B7873F; }
+    .prod-card--capsula { --cat-color: #8A7BB8; }
+    .prod-card--topico { --cat-color: #707682; }
+    .prod-card--flor { --cat-color: #4E7C59; }
 
     .prod-card__body { display: flex; flex-direction: column; gap: 3px; }
     .prod-card__name { font-size: var(--fs-md); font-weight: var(--fw-semibold); color: var(--text); letter-spacing: -0.005em; line-height: 1.25; }
@@ -162,7 +159,7 @@
     .prod-row-thumb--topico { --thumb: var(--regulatory-base); }
     .prod-row-thumb--comestivel { --thumb: #B7873F; }
     .prod-row-thumb--capsula { --thumb: #8A7BB8; }
-    .prod-row-thumb--flor { --thumb: #6E9367; }
+    .prod-row-thumb--flor { --thumb: #4E7C59; }
     .prod-row-meta { display: flex; flex-direction: column; min-width: 0; }
     .prod-row-primary { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--fs-md); letter-spacing: -0.005em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .prod-row-secondary { font-size: var(--fs-sm); color: var(--text-muted); margin-top: 1px; }
@@ -302,14 +299,10 @@
         <section class="prod-grid reveal" aria-label="Produtos">
 
           <!-- 1 · CBD Full Spectrum 3000mg (campeão) -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--oleo" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--care">Óleo · full spectrum</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--oleo">
-              <span class="prod-thumb__tag">★ mais prescrito</span>
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">100</span><span class="prod-thumb__unit">mg/ml</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">CBD Full Spectrum 3000mg</div>
@@ -323,13 +316,10 @@
           </article>
 
           <!-- 2 · CBD Full Spectrum 1500mg -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--oleo" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--care">Óleo · full spectrum</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--oleo">
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">50</span><span class="prod-thumb__unit">mg/ml</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">CBD Full Spectrum 1500mg</div>
@@ -343,13 +333,10 @@
           </article>
 
           <!-- 3 · CBD Isolado 1000mg (estoque baixo) -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--oleo" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--care">Óleo · isolado</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--oleo">
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">33</span><span class="prod-thumb__unit">mg/ml</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">CBD Isolado 1000mg</div>
@@ -363,13 +350,10 @@
           </article>
 
           <!-- 4 · CBD/THC 1:1 600mg (controlado) -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--oleo" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--attention">Óleo · 1:1 · controlado</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--oleo">
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">20</span><span class="prod-thumb__unit">mg/ml</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">CBD/THC 1:1 600mg</div>
@@ -383,13 +367,10 @@
           </article>
 
           <!-- 5 · THC Full Spectrum 1200mg (esgotado) -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--oleo" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--attention">Óleo · THC · controlado</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--oleo" style="opacity: 0.78;">
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">40</span><span class="prod-thumb__unit">mg/ml</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">THC Full Spectrum 1200mg</div>
@@ -403,13 +384,10 @@
           </article>
 
           <!-- 6 · CBG Full Spectrum 1500mg (importação a caminho) -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--oleo" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--regulatory">Óleo · CBG</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--oleo">
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">50</span><span class="prod-thumb__unit">mg/ml</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">CBG Full Spectrum 1500mg</div>
@@ -423,13 +401,10 @@
           </article>
 
           <!-- 7 · CBD Gummies 25mg -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--comestivel" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--care">Comestível</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--comestivel">
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">25</span><span class="prod-thumb__unit">mg/un</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">CBD Gummies 25mg</div>
@@ -443,13 +418,10 @@
           </article>
 
           <!-- 8 · CBD Softgel 50mg -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--capsula" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--care">Cápsula</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--capsula">
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">50</span><span class="prod-thumb__unit">mg/cáp</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">CBD Softgel 50mg</div>
@@ -463,13 +435,10 @@
           </article>
 
           <!-- 9 · CBD Tópico Bálsamo 500mg -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--topico" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--regulatory">Tópico</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--topico">
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">500</span><span class="prod-thumb__unit">mg · 60g</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">CBD Tópico Bálsamo 500mg</div>
@@ -483,13 +452,10 @@
           </article>
 
           <!-- 10 · Flor CBD Charlotte's Angel -->
-          <article class="prod-card" onclick="location.href='#'">
+          <article class="prod-card prod-card--flor" onclick="location.href='#'">
             <div class="prod-card__head">
               <span class="badge badge--regulatory">Flor · in natura</span>
               <button class="prod-card__menu" aria-label="Mais" onclick="event.stopPropagation()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-            </div>
-            <div class="prod-thumb prod-thumb--flor">
-              <div class="prod-thumb__strength"><span class="prod-thumb__num">16%</span><span class="prod-thumb__unit">CBD · 3g</span></div>
             </div>
             <div class="prod-card__body">
               <div class="prod-card__name">Flor CBD Charlotte's Angel</div>
